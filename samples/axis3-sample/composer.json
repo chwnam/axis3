@@ -1,0 +1,25 @@
+{
+  "name": "shoplic/axis3-sample",
+  "description": "Axis 3 Sample Plugin",
+  "type": "wordpress-plugin",
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Shoplic\\Axis3Sample\\": "src/"
+    },
+    "files": [
+      "src/Functions/Idioms.php",
+      "src/Functions/Startup.php"
+    ]
+  },
+  "autoload-dev": {
+  },
+  "license": "GPLv2 or later",
+  "authors": [
+    {
+      "name": "changwoo",
+      "email": "ep6tri@hotmail.com"
+    }
+  ]
+}

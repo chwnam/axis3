@@ -1,0 +1,13 @@
+table.form-table td span.spacer {
+    display: inline-block;
+    width: 12px;
+}
+
+span.axis3-widget-tooltip {
+    float: right;
+}
+
+span.axis3-widget-required:after {
+    content: '*';
+    color: rgb(255, 0, 0);
+}

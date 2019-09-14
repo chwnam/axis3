@@ -1,0 +1,31 @@
+{
+  "name": "shoplic/axis3",
+  "description": "Axis 3 Framework for WordPress Development",
+  "type": "wordpress-plugin",
+  "require": {
+    "erusev/parsedown": "^1.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Shoplic\\Axis3\\": "src/"
+    },
+    "files": [
+      "src/Functions/Datetime.php",
+      "src/Functions/HtmlOutput.php",
+      "src/Functions/Scripts.php",
+      "src/Functions/Utils.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Shoplic\\Axis3\\Tests\\": "test/"
+    }
+  },
+  "license": "GPLv2 or later",
+  "authors": [
+    {
+      "name": "changwoo",
+      "email": "ep6tri@hotmail.com"
+    }
+  ]
+}

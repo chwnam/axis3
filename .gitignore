@@ -1,0 +1,3 @@
+vendor
+tests/Starters/ClassFinders/TestDir/*
+!tests/Starters/ClassFinders/TestDir/.gitkeep
