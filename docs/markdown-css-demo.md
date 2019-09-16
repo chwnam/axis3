@@ -1,4 +1,4 @@
-# GitHub Markdown CSS demo
+# GitHub Markdown CSS Demo
 이 문서는 [Github Markdown CSS demo](https://sindresorhus.com/github-markdown-css/)에서 가져왔습니다.
 
 ## Headers
