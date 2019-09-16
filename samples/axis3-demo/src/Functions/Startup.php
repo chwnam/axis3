@@ -3,6 +3,7 @@
 namespace Shoplic\Axis3Sample\Functions;
 
 use Exception;
+use Shoplic\Axis3\Interfaces\Starters\StarterInterface;
 use Shoplic\Axis3\Starters\ClassFinders\AutoDiscoverClassFinder;
 use Shoplic\Axis3\Starters\Starter;
 
@@ -15,16 +16,18 @@ function checkEnvironment($requiredPhpVersion, $minimumAxisVersion)
 }
 
 /**
- * @param $mainFile
- * @param $version
+ * @param string $mainFile
+ * @param string $version
  *
  * @return Starter
  * @throws Exception
  */
-function getStarter($mainFile, $version)
+function initStarter(string $mainFile, string $version): Starter
 {
     $requiredPhpVersion = '7.0';
     $minimumAxisVersion = '1.0.0';
+    $prefixStem         = 'axis3_demo';
+    $starterSlug        = 'axis3-demo';
 
     if (!checkEnvironment($requiredPhpVersion, $minimumAxisVersion)) {
         throw new Exception(
@@ -51,6 +54,6 @@ function getStarter($mainFile, $version)
         )
         ->setMainFile($mainFile)
         ->setVersion($version)
-        ->setPrefix('axis3_sample')
-        ->setSlug('axis3-sample');
+        ->setPrefix($prefixStem)
+        ->setSlug($starterSlug);
 }

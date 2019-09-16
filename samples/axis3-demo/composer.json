@@ -1,6 +1,6 @@
 {
-  "name": "shoplic/axis3-sample",
-  "description": "Axis 3 Sample Plugin",
+  "name": "shoplic/axis3-demo",
+  "description": "Axis 3 Demo Plugin",
   "type": "wordpress-plugin",
   "require": {
   },

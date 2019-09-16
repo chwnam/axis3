@@ -2,13 +2,12 @@
 
 namespace Shoplic\Axis3Sample\Views\Admin\Metaboxes;
 
-use Shoplic\Axis3\Views\Admin\FieldWidgets\DatePickerWidget;
 use Shoplic\Axis3\Views\Admin\FieldWidgets\InputWidget;
 use Shoplic\Axis3\Views\Admin\FieldWidgets\SelectWidget;
 use Shoplic\Axis3\Views\Admin\PropertyMetaBoxView;
-use Shoplic\Axis3Sample\Models\CustomPosts\SamplePostModel;
+use Shoplic\Axis3Sample\Models\CustomPosts\DemoPostModel;
 
-class SamplePostPropertyMetaBoxView extends PropertyMetaBoxView
+class DemoPropertyMetaBoxView extends PropertyMetaBoxView
 {
     public function getNonceAction(): string
     {
@@ -27,13 +26,13 @@ class SamplePostPropertyMetaBoxView extends PropertyMetaBoxView
 
     public function getTitle(): string
     {
-        return __('샘플 속성들', 'axis3-sample');
+        return __('샘플 속성들', 'axis3-demo');
     }
 
     public function getFieldWidgets($post)
     {
-        /** @var SamplePostModel $model */
-        $model = $this->claimModel(SamplePostModel::class);
+        /** @var DemoPostModel $model */
+        $model = $this->claimModel(DemoPostModel::class);
 
         return [
             new InputWidget(
