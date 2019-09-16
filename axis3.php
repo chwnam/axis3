@@ -5,12 +5,14 @@
  * @license   GPL-2.0+
  *
  * @wordpress-plugin
- * Plugin Name: Axis 3
- * Version: 0.1.0
- * Author: Changwoo Nam
- * Author URI: mailto://changwoo@shoplic.kr
+ * Plugin Name: Axis 3 Framework
+ * Description: A WordPress must-use (MU) plugin for developing highly customized, modern PHP based websites
+ * Version:     1.0.0
+ * Author:      Changwoo Nam
+ * Author URI:  mailto://changwoo@shoplic.kr
+ * Plugin URI:  https://github.com/chwnam/axis3/
  * Text Domain: axis3
- * License: GPL-2.0+
+ * License:     GPL-2.0+
  */
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -29,4 +31,3 @@ if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {
 add_action( 'admin_enqueue_scripts', 'Shoplic\Axis3\Functions\adminEnqueueScripts' );
 
 // TODO: 다양한 값 타입 흡수. 자버의 좌표, 맵
-// TODO: 샘플 플러그인에서 다양한 요소 기능 출력을 직접 확인.
