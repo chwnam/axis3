@@ -247,3 +247,22 @@ function callbackFreeTask(
 
     return $output;
 }
+
+
+/**
+ * 경로에서 SVG 아이콘 이미지를 읽어 이미지를 리턴한다.
+ *
+ * @param string $path 이미지 경로
+ *
+ * @return string 리소스 정보. 헤더 정보를 자동으로 붙여준다.
+ */
+function getSvgIconUrl(string $path): string
+{
+    if (is_file($path) && is_readable($path)) {
+        $content = file_get_contents($path);
+    } else {
+        $content = '';
+    }
+
+    return 'data:image/svg+xml;base64,' . base64_encode($content);
+}
