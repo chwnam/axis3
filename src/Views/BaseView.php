@@ -2,8 +2,11 @@
 
 namespace Shoplic\Axis3\Views;
 
+use Parsedown;
 use Shoplic\Axis3\Interfaces\Views\ViewInterface;
 use Shoplic\Axis3\Objects\AxisObject;
+use function Shoplic\Axis3\Functions\closeTag;
+use function Shoplic\Axis3\Functions\openTag;
 use function Shoplic\Axis3\Functions\toPascalCase;
 
 class BaseView extends AxisObject implements ViewInterface
@@ -295,5 +298,54 @@ class BaseView extends AxisObject implements ViewInterface
         }
 
         return $return ? ob_get_clean() : null;
+    }
+
+    public static function renderMarkdown(string $file, string $id, callable $contentFilter = null)
+    {
+        if (!class_exists('\\Parsedown')) {
+            echo '<h1>' . esc_html__('Parsedown Not Found', 'axis3') . '</h1>';
+            echo '<p>' . __('<a href="https://parsedown.org/">Parsedown</a> is not installed.', 'axis3') . '</p>';
+            _e(
+                '<p>Install it by running <code>composer install</code> command in the <strong>Axis3 root path</strong>.</p>',
+                'axis3'
+            );
+            return;
+        }
+
+        if (!file_exists($file) || !is_file($file) || !is_readable($file)) {
+            echo '<h1>' . esc_html__('Markdown File Not Found', 'axis3') . '</h1>';
+            printf(__('<p>Markdown file \'%s\' is not found, or an invalid file.</p>', 'axis3'), $file);
+            return;
+        }
+
+        openTag('div', ['id' => $id, 'class' => 'markdown-body']);
+        {
+            $pd      = new Parsedown();
+            $content = file_get_contents($file);
+
+            if ($contentFilter) {
+                $content = call_user_func($contentFilter, $content, $file);
+            }
+
+            echo $pd->parse($content);
+        }
+        closeTag('div');
+
+
+        if (!wp_script_is('axis3-prism')) {
+            wp_enqueue_script('axis3-prism');
+        }
+
+        if (!wp_style_is('axis3-prism')) {
+            wp_enqueue_style('axis3-prism');
+        }
+
+        if (!wp_style_is('axis3-github-markdown')) {
+            wp_enqueue_style('axis3-github-markdown');
+        }
+
+        if (is_admin() && !wp_style_is('axis3-admin-github-markdown')) {
+            wp_enqueue_style('axis3-admin-github-markdown');
+        }
     }
 }
