@@ -26,6 +26,14 @@ function adminEnqueueScripts()
         true
     );
 
+    wp_register_script(
+        'axis3-prism',
+        $assetUrlBase . '/js/prism.min.js',
+        [],
+        '1.17.1',
+        true
+    );
+
     wp_register_style(
         'axis3-jquery-ui',
         filterScriptUrl($assetUrlBase . '/css/jquery-ui.min.css'),
@@ -38,5 +46,26 @@ function adminEnqueueScripts()
         $assetUrlBase . '/css/admin/field-widgets/style.css',
         [],
         AXIS3_VERSION
+    );
+
+    wp_register_style(
+        'axis3-github-markdown',
+        $assetUrlBase . '/css/github-markdown.css',
+        [],
+        '3.0.1'
+    );
+
+    wp_register_style(
+        'axis3-admin-github-markdown',
+        $assetUrlBase . '/css/admin/admin-github-markdown.css',
+        ['axis3-github-markdown'],
+        AXIS3_VERSION
+    );
+
+    wp_register_style(
+        'axis3-prism',
+        $assetUrlBase . '/css/prism.css',
+        [],
+        '1.17.1'
     );
 }
