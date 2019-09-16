@@ -131,7 +131,7 @@ abstract class SplitView extends BaseView
             if (false !== $pos) {
                 unset($this->allowedParams[$pos]);
             }
-            $this->$param = $param;
+            $this->param = $param;
         }
 
         return $this;
