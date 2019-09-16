@@ -73,16 +73,18 @@ class Starter implements StarterInterface
         }
 
         if (empty($this->getMainFile())) {
-            throw new Exception(__('The plugin\'s main file has not been set', 'axis3'));
+            throw new Exception(__('The plugin\'s main file has not been set.', 'axis3'));
         } elseif (empty($this->getSlug())) {
-            throw new Exception(__('The plugin\'s slug has not been set', 'axis3'));
+            throw new Exception(__('The plugin\'s slug has not been set.', 'axis3'));
+        } elseif (empty($this->getVersion())) {
+            throw new Exception(__('The plugin\'s version has not been set.', 'axis3'));
         }
 
         if (empty($this->getTextdomain())) {
             $this->setTextdomain($this->getSlug());
         }
 
-        if ($this->getPrefix() === '_') {
+        if (empty($this->getPrefix())) {
             $this->setPrefix($this->getSlug());
         }
 
