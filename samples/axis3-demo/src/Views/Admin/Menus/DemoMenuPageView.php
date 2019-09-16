@@ -35,13 +35,34 @@ class DemoMenuPageView extends MenuPageView
         return getSvgIconUrl(plugin_dir_path(AXIS3_MAIN) . 'src/assets/img/axis3-icon.svg');
     }
 
+    /**
+     * 페이지 출력. 탭을 설정하고, 선택된 탭을 출력한다.
+     *
+     * @uses MarkdownView::renderAxis3()
+     * @uses MarkdownView::renderMtiv()
+     * @uses MarkdownView::renderMarkdownCssDemo()
+     */
     public function dispatch()
     {
         /** @var TabView $view */
         $view = $this->claimView(TabView::class, [], false);
-        $view->addItem('hello', __('Axis3', 'axis3-demo'), '__return_empty_string');
-        $view->addItem('what-is-mtiv', __('MTIV에 대해', 'axis3-demo'), '__return_empty_string');
-        $view->addItem('markdown', __('Markdown 샘플', 'axis3-demo'), [MarkdownView::class, 'dispatch']);
+
+        $view->addItem(
+            'hello',
+            __('Axis3', 'axis3-demo'),
+            [MarkdownView::class, 'renderAxis3']
+        );
+        $view->addItem(
+            'what-is-mtiv',
+            __('MTIV', 'axis3-demo'),
+            [MarkdownView::class, 'renderMtiv']
+        );
+        $view->addItem(
+            'markdown',
+            __('Markdown 샘플', 'axis3-demo'),
+            [MarkdownView::class, 'renderMarkdownCssDemo']
+        );
+
         $view->addAllowedParam('page', $_GET['page'] ?? '');
         $view->dispatch();
     }
