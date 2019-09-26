@@ -11,6 +11,14 @@ function adminEnqueueScripts()
     $assetUrlBase = plugins_url('src/assets', AXIS3_MAIN);
 
     wp_register_script(
+        'axis3-attach-media',
+        $assetUrlBase . '/js/admin/attach-media.js',
+        ['jquery', 'media-editor'],
+        AXIS3_VERSION,
+        true
+    );
+
+    wp_register_script(
         'axis3-field-widgets',
         $assetUrlBase . '/js/admin/field-widgets/script.js',
         ['jquery'],
@@ -22,6 +30,14 @@ function adminEnqueueScripts()
         'axis3-datepicker-widget',
         $assetUrlBase . '/js/admin/field-widgets/datepicker.js',
         ['jquery', 'jquery-ui-datepicker'],
+        AXIS3_VERSION,
+        true
+    );
+
+    wp_register_script(
+        'axis3-media-library-selector-widget',
+        $assetUrlBase . '/js/admin/field-widgets/media-library-selector.js',
+        ['jquery', 'axis3-attach-media'],
         AXIS3_VERSION,
         true
     );
