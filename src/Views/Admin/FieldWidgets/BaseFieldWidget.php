@@ -5,8 +5,10 @@ namespace Shoplic\Axis3\Views\Admin\FieldWidgets;
 use Shoplic\Axis3\Interfaces\Models\FieldModels\FieldModelInterface;
 use Shoplic\Axis3\Interfaces\Models\FieldModels\MetaFieldModelInterface;
 use Shoplic\Axis3\Interfaces\Models\FieldModels\OptionFieldModelInterface;
+use Shoplic\Axis3\Interfaces\Models\ValueObjects\ValueObjectInterface;
 use Shoplic\Axis3\Interfaces\Views\Admin\FieldWidgets\FieldWidgetInterface;
 use Shoplic\Axis3\Models\FieldModels\StubFieldModel;
+use Shoplic\Axis3\Models\ValueTypes\ValueObjectType;
 use Shoplic\Axis3\Views\BaseView;
 
 /**
