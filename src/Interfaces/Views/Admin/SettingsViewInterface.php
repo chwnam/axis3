@@ -90,7 +90,13 @@ interface SettingsViewInterface
      * @return self
      * @see    add_settings_field()
      */
-    public function addField(string $section, $fieldWidget, $args = [], $key = null, $callback = null);
+    public function addField(
+        string $section,
+        FieldWidgetInterface $fieldWidget,
+        array $args = [],
+        $key = null,
+        $callback = null
+    );
 
     /**
      * 옵션 화면을 출력한다.

@@ -81,12 +81,12 @@ abstract class SettingsView extends BaseView implements SettingsViewInterface
         return $this;
     }
 
-    public function addField(string $section, $fieldWidget, $args = [], $key = null, $callback = null)
+    public function addField(string $section, FieldWidgetInterface $fieldWidget, array $args = [], $key = null, $callback = null)
     {
         $section = sanitize_key($section);
 
         if (!$key) {
-            $key = $fieldWidget->getFieldModel()->getKey();
+            $key = $fieldWidget->getId();
         }
 
         $fieldWidget->setStarter($this->getStarter());
@@ -98,6 +98,8 @@ abstract class SettingsView extends BaseView implements SettingsViewInterface
             'callback' => $callback,
             'args'     => $args,
         ];
+
+        return $this;
     }
 
     /**

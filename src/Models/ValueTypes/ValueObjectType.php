@@ -12,7 +12,7 @@ class ValueObjectType extends BaseValueType
 
     public function __construct($valueObjectType)
     {
-        if (!classImplements($$valueObjectType, ValueObjectInterface::class)) {
+        if (!classImplements($valueObjectType, ValueObjectInterface::class)) {
             throw new \InvalidArgumentException(
                 __('$valueObjectType must be an ValueObjectInterface.', 'axis3')
             );
@@ -63,7 +63,13 @@ class ValueObjectType extends BaseValueType
     public function export($value)
     {
         /** @var ValueObjectInterface $value */
-        return $value->toArray();
+        if ($value instanceof ValueObjectInterface) {
+            return $value->toArray();
+        } elseif (is_array($value)) {
+            return $value;
+        }
+
+        return [];
     }
 
     public function import($value)

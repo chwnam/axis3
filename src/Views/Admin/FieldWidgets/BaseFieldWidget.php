@@ -53,6 +53,20 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
 
         // keyPostfix 처리
         $this->args['keyPostfix'] = array_filter(array_map('sanitize_key', (array)$this->args['keyPostfix']));
+
+        if ($fieldModel->getValueType() instanceof ValueObjectType) {
+            if (!isset($this->args['getterMethod'])) {
+                throw new \InvalidArgumentException(__('ValueType must define \'getterMethod\' property.', 'axis3'));
+            } elseif (!method_exists($fieldModel->getValueType()->getType(), $this->args['getterMethod'])) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        __('The value type \'%s\'does not have method \'%s\'.', 'axis3'),
+                        $fieldModel->getValueType()->getType(),
+                        $this->args['getterMethod']
+                    )
+                );
+            }
+        }
     }
 
     public function getFieldModel(): FieldModelInterface
@@ -207,6 +221,7 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
     public function getValue()
     {
         $fieldModel = $this->getFieldModel();
+        $value      = null;
 
         switch ($fieldModel->getFieldType()) {
             case 'meta':
@@ -228,7 +243,8 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
                         }
                     }
                 }
-                return $objectId ? $fieldModel->retrieve($objectId) : $fieldModel->getDefault();
+                $value = $objectId ? $fieldModel->retrieve($objectId) : $fieldModel->getDefault();
+                break;
 
             case 'option':
                 /** @var OptionFieldModelInterface $fieldModel */
@@ -236,14 +252,20 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
                 if ($fieldModel->isContextual()) {
                     $context = $this->args['context'];
                 }
-                return $fieldModel->retrieve($context);
+                $value = $fieldModel->retrieve($context);
+                break;
 
             case 'stub':
                 /** @var StubFieldModel $fieldModel */
-                return $fieldModel->getDefault();
+                $value = $fieldModel->getDefault();
+                break;
         }
 
-        return null;
+        if ($value instanceof ValueObjectInterface) {
+            $value = $value->{$this->args['getterMethod']}();
+        }
+
+        return $value;
     }
 
     public function getTitle(): string
@@ -426,6 +448,10 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
             //                    폼 제출시 전달하는 변수를 배열 형태로, 배열의 키를 명시적으로 지정할 수 있다.
             //                    다중 배열로 지정하려면 array 를 이용한다.
             'keyPostfix'       => null,
+
+            // string: 값 타입이 valueObject 인 경우 명시해야 한다.
+            //         메소드 이름으로부터 값을 구해 온다.
+            // 'getterMethod' => null,
         ];
     }
 

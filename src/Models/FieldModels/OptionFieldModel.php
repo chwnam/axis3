@@ -90,20 +90,22 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
             /** @var string $result 검증에 실패한 경우 $result 는 실패 메시지 문자열. */
             if ($this->getValueType()->isStrict()) {
                 $description = sprintf(
-                    __('Option \'%s\' has failed verification', 'axis3'),
-                    $this->getKey()
+                    __('Option value \'%s\' for \'%s\' is invalid.', 'axis3'),
+                    $value,
+                    $this->getLabel()
                 );
                 $this->dieValidationError($description, $result, $value);
             } else {
                 $description = sprintf(
-                    __('Option \'%s\' has failed verification and replaced with the default value', 'axis3'),
-                    $this->getKey()
+                    __('Option value %s for \'%s\' is invalid and replaced with the default value.', 'axis3'),
+                    is_scalar($value) ? $value : '',
+                    $this->getLabel()
                 );
                 add_settings_error(
                     $this->getGroup(),
                     'warning-' . $this->getKey(),
                     $description,
-                    'warning'
+                    'notice-warning'
                 );
                 $verifiedValue = $this->getDefault(ValueTypeInterface::DEFAULT_CONTEXT_VERIFY);
             }

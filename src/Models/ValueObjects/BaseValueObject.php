@@ -25,10 +25,14 @@ abstract class BaseValueObject implements ValueObjectInterface
 {
     public static function fromArray($array)
     {
-        $instance = new static();
-        foreach ((array)$array as $key => $value) {
-            if (is_string($key) && !empty($key)) {
-                $instance->{'set' . toPascalCase($key)}($value);
+        if ($array instanceof ValueObjectInterface) {
+            $instance = $array;
+        } else {
+            $instance = new static();
+            foreach ((array)$array as $key => $value) {
+                if (is_string($key) && !empty($key)) {
+                    $instance->{'set' . toPascalCase($key)}($value);
+                }
             }
         }
 
@@ -40,7 +44,7 @@ abstract class BaseValueObject implements ValueObjectInterface
         $out = [];
 
         try {
-            $reflection = new ReflectionClass(__CLASS__);
+            $reflection = new ReflectionClass(static::class);
             $properties = $reflection->getProperties(ReflectionProperty::IS_PRIVATE);
             foreach ($properties as $property) {
                 $out[toSnakeCase($property->getName())] = $this->{'get' . ucfirst($property->getName())}();
