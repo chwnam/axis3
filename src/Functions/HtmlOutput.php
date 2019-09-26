@@ -256,7 +256,7 @@ function selectTag(
             $selected,
             [
                 'disabled'  => true,
-                'autofocus' => true,
+                'selected'  => $selected == $headingOption[0],
             ],
             false
         );
@@ -267,7 +267,7 @@ function selectTag(
             $selected,
             [
                 'disabled'  => true,
-                'autofocus' => true,
+                'selected'  => empty($selected),
             ],
             false
         );
