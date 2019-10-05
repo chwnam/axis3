@@ -130,6 +130,3 @@ class DoubleType extends BaseValueType
         );
     }
 }
-
-class_alias(DoubleType::class, 'Shoplic\Axis3\Models\ValueTypes\FloatType');
-class_alias(DoubleType::class, 'Shoplic\Axis3\Models\ValueTypes\RealType');
