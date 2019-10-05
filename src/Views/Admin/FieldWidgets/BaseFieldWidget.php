@@ -227,25 +227,8 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
 
         switch ($fieldModel->getFieldType()) {
             case 'meta':
-                /** @var MetaFieldModelInterface $fieldModel */
-                $objectId   = $this->args['objectId'] ?? null;
-                $objectType = $fieldModel->getObjectType();
-                if (is_null($objectId)) {
-                    if (MetaFieldModelInterface::OBJECT_TYPE_POST === $objectType) {
-                        // objectId 가 주어진 적 없지만, 오브젝트 타입이 포스트라면 전역변수에서 가져올 수 있다.
-                        $post = get_post();
-                        if ($post && $post->ID) {
-                            $objectId = $post->ID;
-                        }
-                    } elseif (MetaFieldModelInterface::OBJECT_TYPE_USER === $objectType) {
-                        // 오브젝트 타입이 사용자라면 현재 사용자에서 가져올 수 있다.
-                        $user = wp_get_current_user();
-                        if ($user && $user->exists()) {
-                            $objectId = $user->ID;
-                        }
-                    }
-                }
-                $value = $objectId ? $fieldModel->retrieve($objectId) : $fieldModel->getDefault();
+                $objectId = $this->getObjectId();
+                $value    = $objectId ? $fieldModel->retrieve($objectId) : $fieldModel->getDefault();
                 break;
 
             case 'option':
@@ -463,6 +446,33 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
      * @return void
      */
     abstract protected function outputWidgetCore();
+
+    protected function getObjectId()
+    {
+        $objectId = null;
+
+        if ('meta' === $this->getFieldModel()->getFieldType()) {
+            $objectId = $this->args['objectId'] ?? null;
+            if (is_null($objectId)) {
+                $objectType = $this->getFieldModel()->getObjectType();
+                if (MetaFieldModelInterface::OBJECT_TYPE_POST === $objectType) {
+                    // objectId 가 주어진 적 없지만, 오브젝트 타입이 포스트라면 전역변수에서 가져올 수 있다.
+                    $post = get_post();
+                    if ($post && $post->ID) {
+                        $objectId = $post->ID;
+                    }
+                } elseif (MetaFieldModelInterface::OBJECT_TYPE_USER) {
+                    // 오브젝트 타입이 사용자라면 현재 사용자에서 가져올 수 있다.
+                    $user = wp_get_current_user();
+                    if ($user && $user->exists()) {
+                        $objectId = $user->ID;
+                    }
+                }
+            }
+        }
+
+        return $objectId;
+    }
 
     private function renderCallback($param)
     {
