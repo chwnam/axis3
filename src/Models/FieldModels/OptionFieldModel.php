@@ -33,20 +33,40 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
 
     public function retrieve($context = null)
     {
+        $value = null;
+
         if ($this->isContextual()) {
             $default = $this->getDefault();
             $value   = (array)get_option($this->getKey(), $default);
             $context = sanitize_key($context);
             if (isset($value[$context])) {
-                return $this->import($value[$context]);
+                $contextValue = &$value[$context];
             } elseif (isset($default[$context])) {
-                return $this->import($default[$context]);
+                $contextValue = &$default[$context];
             } else {
-                return $default;
+                $contextValue = &$default;
+            }
+            if ($this->args['updateCache']) {
+                if (is_array($value)) {
+                    $value[$context] = $this->import($contextValue);
+                    $this->updateCache($value);
+                }
+            } else {
+                $value = $this->import($contextValue);
             }
         } else {
-            return $this->import(get_option($this->getKey(), $this->getDefault()));
+            $value = get_option($this->getKey(), $this->getDefault());
+            if ($this->args['updateCache']) {
+                if (is_array($value)) {
+                    $value = $this->import($value);
+                    $this->updateCache($value);
+                }
+            } else {
+                $value = $this->import($value);
+            }
         }
+
+        return $value;
     }
 
     public function save($value, $context = null)
@@ -60,6 +80,37 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
 
         // update_option() 함수 내부에서 sanitize 용도로 defaultSanitizeCallback() 메소드를 호출할 것임.
         return update_option($this->getKey(), $value, $this->isAutoload());
+    }
+
+    /**
+     * 옵션 값을 읽은 후 옵션 값을 import 된 값으로 업데이트해 놓는다.
+     *
+     * @callback
+     * @filter    option_{$option}
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function updateCache($value)
+    {
+        $key   = $this->getKey();
+        $value = $this->import($value);
+
+        $allOptions = wp_cache_get('alloptions', 'options');
+        if (isset($allOptions[$key])) {
+            $allOptions[$key] = $value;
+            wp_cache_set('alloptions', $allOptions, 'options');
+        } else {
+            $option = wp_cache_get($key, 'options');
+            if (false !== $option) {
+                wp_cache_replace($key, $value, 'options');
+            } else {
+                wp_cache_set($key, $value, 'options');
+            }
+        }
+
+        return $value;
     }
 
     /**

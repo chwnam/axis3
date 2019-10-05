@@ -4,7 +4,7 @@ namespace Shoplic\Axis3\Models\FieldModels;
 
 use Shoplic\Axis3\Interfaces\Models\FieldModels\MetaFieldModelInterface;
 use Shoplic\Axis3\Interfaces\Models\ValueTypes\ValueTypeInterface;
-use Shoplic\Axis3\Interfaces\Views\Admin\FieldWidgets\FieldWidgetInterface;
+use Shoplic\Axis3\Models\ValueTypes\ValueObjectType;
 use WP_Comment;
 use WP_Comment_Query;
 use WP_Post;
@@ -39,6 +39,10 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
             $this->args['authCallback'] = [$this, 'defaultAuthCallback'];
         } elseif (!is_callable($this->args['authCallback'])) {
             $this->args['authCallback'] = null;
+        }
+
+        if (is_null($this->args['updateCache'])) {
+            $this->args['updateCache'] = $this->getValueType() instanceof ValueObjectType;
         }
     }
 
@@ -88,11 +92,24 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
         if (empty($value)) {
             $cache = wp_cache_get($objectId, $this->getObjectType() . '_meta');
             if (!$cache || !isset($cache[$this->getKey()])) {
-                return $this->getDefault();
+                $value = $this->getDefault();
             }
         }
 
-        return $this->import($value);
+        if ($this->args['updateCache']) {
+            if (is_array($value)) {
+                $cache = wp_cache_get($objectId, $this->getObjectType() . '_meta');
+                if (false === $cache) {
+                    $cache = [];
+                }
+                $cache[$this->getKey()] = $value = $this->import($value);
+                wp_cache_replace($objectId, $cache, $this->getObjectType() . '_meta');
+            }
+        } else {
+            $value = $this->import($value);
+        }
+
+        return $value;
     }
 
     public function save($objectId, $value)
@@ -108,12 +125,14 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
             );
         }
 
-        return update_metadata(
+        $result = update_metadata(
             $this->getObjectType(),
             $this->checkObjectId($objectId),
             $this->getKey(),
             $value
         );
+
+        return $result;
     }
 
     public function saveFromRequest($objectId, &$request, $whenKeyNotFound = null)

@@ -5,6 +5,7 @@ namespace Shoplic\Axis3\Models\FieldModels;
 use Shoplic\Axis3\Interfaces\Models\FieldModels\FieldModelInterface;
 use Shoplic\Axis3\Interfaces\Models\ValueTypes\ValueTypeInterface;
 use Shoplic\Axis3\Models\BaseModel;
+use Shoplic\Axis3\Models\ValueTypes\ValueObjectType;
 
 /**
  * Class BaseFieldModel
@@ -29,6 +30,10 @@ abstract class BaseFieldModel extends BaseModel implements FieldModelInterface
         if (!$this->args['sanitizeCallback']) {
             /** @uses MetaFieldModel::defaultSanitizeCallback() */
             $this->args['sanitizeCallback'] = [$this, 'defaultSanitizeCallback'];
+        }
+
+        if (is_null($this->args['updateCache'])) {
+            $this->args['updateCache'] = $this->getValueType() instanceof ValueObjectType;
         }
 
         if (!did_action('plugins_loaded')) {
@@ -206,6 +211,16 @@ abstract class BaseFieldModel extends BaseModel implements FieldModelInterface
 
             /* bool REST 에서 보이려면 true 로 설정하세요. */
             'showInRest'       => false,
+
+            /**
+             * null|bool: 불러온 값이 array, 즉 serialized 된 값이었던 값에 대해서는 캐시 업데이트를 할지 결정.
+             *            true 면 import() 거친 값을 캐시에 저장된 값과 바꾼다.
+             *            그래서 다음 get_option() 시에는 import()를 거친 값이 바로 불리도록 처리한다.
+             *            null 값은 'valueType' 인자를 보고 판단한다. 판단 기준은 아래와 같다.
+             *             - ObjectValueType 이면 true
+             *             - 이외의 경우는 false
+             */
+            'updateCache' => null,
 
             /**
              * callable: sanitize(), verify() 기본 메소드에서 이 파라미터에 정의된 콜백을 실행합니다.
