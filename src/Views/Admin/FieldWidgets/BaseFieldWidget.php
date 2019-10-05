@@ -123,7 +123,7 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
         if ($this->args['brDesc']) {
             echo '<br>';
         } else {
-            echo '<span class="spacer"></span>';
+            echo (isset($this->args['noSpacer']) && $this->args['noSpacer']) ? '' : '<span class="spacer"></span>';
         }
 
         echo '<span class="description">' . wp_kses_post($description) . '</span>';
@@ -437,6 +437,9 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
             // string: 값 타입이 valueObject 인 경우 명시해야 한다.
             //         메소드 이름으로부터 값을 구해 온다.
             // 'getterMethod' => null,
+
+            // bool: 이 키를 설정하고 false 로 두면 brDesc=false 일 때 공간을 추가하지 않는다.
+            // 'noSpacer' => false
         ];
     }
 
