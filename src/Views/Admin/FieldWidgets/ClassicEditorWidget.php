@@ -9,13 +9,29 @@ class ClassicEditorWidget extends BaseFieldWidget
 {
     private static $dummyId = 'axis3-classic-editor-dummy-id';
 
+    private static $dummyName = 'axis3-classic-editor-dummy-name';
+
     private static $htmlTemplate = false;
 
     public function outputWidgetCore()
     {
         ob_start();
-        wp_editor('{{{ data.content }}}', static::$dummyId, $this->args['wpEditor']);
-        static::$htmlTemplate = trim(str_replace(static::$dummyId, '{{ data.editorId }}', ob_get_clean()));
+        wp_editor(
+            '{{{ data.content }}}',
+            static::$dummyId,
+            array_merge($this->args['wpEditor'], ['textarea_name' => static::$dummyName])
+        );
+        static::$htmlTemplate = trim(str_replace(
+                [
+                    static::$dummyId,
+                    static::$dummyName,
+                ],
+                [
+                    '{{ data.editorId }}',
+                    '{{ data.editorName }}',
+                ],
+                ob_get_clean())
+        );
 
         echo openTag(
             'div',
@@ -46,15 +62,16 @@ class ClassicEditorWidget extends BaseFieldWidget
             true,
             $varObj,
             [
-                'dummyId'  => static::$dummyId,
-                'editorId' => $this->getId(),
-                'content'  => $this->getValue(),
-                'target'   => '#axis3-classic-editor-' . $this->getId(),
+                'dummyId'    => static::$dummyId,
+                'editorId'   => $this->getId(),
+                'editorName' => $this->getName(),
+                'content'    => $this->getValue(),
+                'target'     => '#axis3-classic-editor-' . $this->getId(),
             ],
             "(function ($) {
                 $(document).ready(function ($) {
                     var obj = {$varObj};
-                    axis3ClassicEditor(obj.target, obj.dummyId, obj.editorId, obj.content); 
+                    axis3ClassicEditor(obj); 
                 });
             })(jQuery);"
         );
@@ -82,7 +99,7 @@ class ClassicEditorWidget extends BaseFieldWidget
                  * array: wp_editor() 의 세번째 인자.
                  *
                  * @link https://codex.wordpress.org/Function_Reference/wp_editor
-                 * @see  wp_editor()
+                 * @see  \_WP_Editors::parse_settings()
                  */
                 'wpEditor' => [
                     'textarea_rows' => 3,

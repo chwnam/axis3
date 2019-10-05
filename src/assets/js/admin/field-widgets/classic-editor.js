@@ -2,18 +2,28 @@ if (window.hasOwnProperty('jQuery') && 'function' === typeof window.jQuery) {
     (function ($) {
         var template;
 
-        window.axis3ClassicEditor = function (target, dummyId, editorId, content) {
+        window.axis3ClassicEditor = function (obj) {
             if (_ && tinymce && tinyMCEPreInit) {
-                var init = _.clone(tinyMCEPreInit.mceInit[dummyId]),
-                    qtInit = _.clone(tinyMCEPreInit.qtInit[dummyId]);
-                console.log($(target));
-                $(target).html(template({
-                    editorId: editorId,
-                    content: content
+                var init, qtInit;
+
+                obj = _.extend({
+                    dummyId: '',
+                    editorId: '',
+                    editorName: '',
+                    content: '',
+                    target: '',
+                }, obj);
+                init = _.clone(tinyMCEPreInit.mceInit[obj.dummyId]);
+                qtInit = _.clone(tinyMCEPreInit.qtInit[obj.dummyId]);
+
+                $(obj.target).html(template({
+                    editorId: obj.editorId,
+                    editorName: obj.editorName,
+                    content: obj.content
                 }));
 
-                init.selector = '#' + editorId;
-                qtInit.id = editorId;
+                init.selector = '#' + obj.editorId;
+                qtInit.id = obj.editorId;
 
                 tinymce.init(init);
                 if (typeof quicktags !== 'undefined') {
