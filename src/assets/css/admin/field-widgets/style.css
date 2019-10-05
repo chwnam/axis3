@@ -15,3 +15,17 @@ span.axis3-widget-required:after {
 .axis3-field-widget.axis3-classic-editor-widget {
     width: 97%;
 }
+
+.axis3-field-widget.axis3-google-map-widget .address-field-label {
+    display: inline-block;
+    width: 7%;
+}
+
+.axis3-field-widget.axis3-google-map-widget .address-field {
+    width: 73%;
+}
+
+.axis3-field-widget.axis3-google-map-widget > div:nth-child(2) {
+    margin-top: 10px;
+    margin-bottom: 6px;
+}
