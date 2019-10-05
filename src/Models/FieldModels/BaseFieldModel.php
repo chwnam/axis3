@@ -263,6 +263,5 @@ abstract class BaseFieldModel extends BaseModel implements FieldModelInterface
                 'code'      => 'error-' . $this->getKey(),
             ]
         );
-
     }
 }
