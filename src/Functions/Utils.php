@@ -266,3 +266,41 @@ function getSvgIconUrl(string $path): string
 
     return 'data:image/svg+xml;base64,' . base64_encode($content);
 }
+
+
+/**
+ * 사람이 이해하기 쉬운 용량으로 표시한다.
+ *
+ * @param int $size       입력 용량
+ * @param int $decimal    소숫점 자리 수
+ * @param int $base       1000 단위로 계산하거나, 1024 단위로 만들 수 있다.
+ *                        1000이면 단위는 다음처럼 표기된다.
+ *                        B, KB, MB, GB, TB, PB, EB, ZB, YB
+ *
+ *                        1024이면 단위는 다음처럼 표기된다.
+ *                        B, KiB, MiB, GiB, TiB, PiB, EiB, ZiB, YiB
+ *
+ *                        이 둘이 아닌 것이 입력되면 1000 으로 교정된다.
+ *
+ * @return array
+ */
+function humanReadableSize(int $size, int $decimal = 1, int $base = 1000): array
+{
+    if ($base !== 1000 && $base !== 1024) {
+        $base = 1000;
+    }
+
+    if (1000 === $base) {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    } else {
+        $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+    }
+
+    $log = log($size, $base);
+    $idx = (int)$log;
+
+    return [
+        round($size / pow($base, $idx), $decimal),
+        $units[$idx],
+    ];
+}
