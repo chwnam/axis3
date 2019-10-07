@@ -7,7 +7,7 @@ use Shoplic\Axis3\Interfaces\Starters\StarterInterface;
 use Shoplic\Axis3\Starters\ClassFinders\AutoDiscoverClassFinder;
 use Shoplic\Axis3\Starters\Starter;
 
-function checkEnvironment($requiredPhpVersion, $minimumAxisVersion)
+function checkEnvironment(string $requiredPhpVersion, string $minimumAxisVersion): bool
 {
     $phpVersion  = version_compare(phpversion(), $requiredPhpVersion, '>=');
     $axisVersion = version_compare(AXIS3_VERSION, $minimumAxisVersion, '>=');
