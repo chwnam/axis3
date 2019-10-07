@@ -16,16 +16,19 @@ span.axis3-widget-required:after {
     width: 97%;
 }
 
-.axis3-field-widget.axis3-google-map-widget .address-field-label {
+.axis3-field-widget.axis3-google-map-widget .address-field-label,
+.axis3-field-widget.axis3-kakao-map-widget .address-field-label{
     display: inline-block;
     width: 7%;
 }
 
-.axis3-field-widget.axis3-google-map-widget .address-field {
+.axis3-field-widget.axis3-google-map-widget .address-field,
+.axis3-field-widget.axis3-kakao-map-widget .address-field {
     width: 73%;
 }
 
-.axis3-field-widget.axis3-google-map-widget > div:nth-child(2) {
+.axis3-field-widget.axis3-google-map-widget > div:nth-child(2),
+.axis3-field-widget.axis3-kakao-map-widget > div:nth-child(2) {
     margin-top: 10px;
     margin-bottom: 6px;
 }

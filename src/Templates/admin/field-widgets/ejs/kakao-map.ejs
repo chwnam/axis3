@@ -1,0 +1,36 @@
+<script type="text/template" id="tmpl-axis3-kakao-map-info-window">
+    <div class="axis3-field-widget axis3-kakao-map-widget info-window-panel">
+        <h3 class="info-window-title" style="margin: 5px 10px;"><?php esc_html_e('Selected', 'axis3'); ?></h3>
+        <div style="margin: 5px 10px;">
+            <form>
+                <# if (data.roadAddress) { #>
+                <p class="info-window-address">
+                    <input id="road-address"
+                           name="kakao_map_address"
+                           type="radio"
+                           value="{{ data.roadAddress }}"
+                           data-postcode="{{ data.postcode }}"
+                           checked="checked">
+                    <label for="road-address">
+                        <?php esc_html_e('Road', 'axis3'); ?>: {{ data.roadAddress }}</label>
+                </p>
+                <# } #>
+                <p class="info-window-address">
+                    <input id="jibun-address"
+                           name="kakao_map_address"
+                           type="radio"
+                           value="{{ data.address }}"
+                           data-postcode=""
+                           {{ data.roadAddress ? '' : 'checked="checked"'}}>
+                    <label for="jibun-address">
+                        <?php esc_html_e('Jibeon', 'axis3'); ?>: {{ data.address }}</label>
+                </p>
+                <div class="alignright" style="margin-top: 15px;">
+                    [<a href="#" id="axis3-kakao-map-apply" role="button" style="font-size: 14px;">
+                        <?php esc_html_e('Apply', 'axis3'); ?></a>]
+                </div>
+            </form>
+            <div class="wp-clearfix"></div>
+        </div>
+    </div>
+</script>

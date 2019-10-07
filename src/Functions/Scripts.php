@@ -43,6 +43,14 @@ function adminEnqueueScripts()
     );
 
     wp_register_script(
+        'axis3-kakao-map',
+        $assetUrlBase . '/js/admin/field-widgets/kakao-map.js',
+        ['jquery', 'wp-util', 'axis3-kakao-map-api'],
+        AXIS3_VERSION,
+        true
+    );
+
+    wp_register_script(
         'axis3-media-library-selector-widget',
         $assetUrlBase . '/js/admin/field-widgets/media-library-selector.js',
         ['jquery', 'axis3-attach-media'],
