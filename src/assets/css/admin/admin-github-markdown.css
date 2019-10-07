@@ -1,5 +1,6 @@
 .markdown-body {
     margin-top: 20px;
+    padding-right: 25px;
 }
 
 .markdown-body h1 {
@@ -8,6 +9,7 @@
 
 .markdown-body h2 {
     border-color: #c5c5c5;
+    margin-top: 36px;
 }
 
 .markdown-body p {
