@@ -14,7 +14,17 @@ class MarkdownView extends BaseView
      */
     public function renderAxis3()
     {
-        static::renderMarkdown(plugin_dir_path(AXIS3_MAIN) . 'docs/axis3.md', 'axis3');
+        static::renderMarkdown(
+            plugin_dir_path(AXIS3_MAIN) . 'docs/axis3.md',
+            'axis3',
+            function ($content) {
+                return str_replace(
+                    '![](img/',
+                    '![](' . esc_url(plugin_dir_url(AXIS3_MAIN) . 'docs/img/'),
+                    $content
+                );
+            }
+        );
     }
 
     /**
