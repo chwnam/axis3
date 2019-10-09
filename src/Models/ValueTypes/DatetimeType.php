@@ -97,7 +97,7 @@ class DatetimeType extends BaseValueType
     public function export($value)
     {
         if ($value instanceof DateTime) {
-            return $value->format($this->args['dateFormat']);
+            return datetimeI18n($value, $this->args['dateFormat']);
         }
 
         return false;

@@ -107,7 +107,7 @@ function getDatetime($input = 'now', $timezone = null, $inputFormat = null)
         } elseif ($input) {
             // true 는 여기서 예외를 일으켜 false 리턴값을 내게 됨.
             if ($inputFormat) {
-                $output = Datetime::createFromFormat($inputFormat, $input, $timezone);
+                $output = createFromFormat($inputFormat, $input, $timezone);
             } else {
                 $output = new DateTime($input, $timezone);
             }
@@ -167,4 +167,33 @@ function getTimezone($forceRefresh = false)
     }
 
     return $cached;
+}
+
+
+function createFromFormat(string $format, string $input, DateTimeZone $timezone)
+{
+    global $wp_locale;
+
+    $format = preg_replace('/(?<!\\\\)c/', DATE_W3C, $format);
+    $format = preg_replace('/(?<!\\\\)r/', DATE_RFC2822, $format);
+
+    if (!empty($wp_locale->month) && !empty($wp_locale->weekday)) {
+        $expressions = [
+            'weekday_abbrev' => 'D',
+            'month'          => 'F',
+            'weekday'        => 'l',
+            'month_abbrev'   => 'M',
+            'merdiem'        => '[aA]',
+        ];
+
+        foreach ($expressions as $property => $regex) {
+            if (isset($wp_locale->{$property}) && is_array($wp_locale->{$property})) {
+                if (preg_match('/' . implode('|', $wp_locale->{$property}) . '/', $input, $match)) {
+                    $format = preg_replace("/([^\\\]){$regex}/", '\\1' . backslashit($match[0] ?? ''), $format);
+                }
+            }
+        }
+    }
+
+    return DateTime::createFromFormat($format, $input, $timezone);
 }
