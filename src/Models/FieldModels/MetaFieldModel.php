@@ -97,12 +97,12 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
         }
 
         if ($this->args['updateCache']) {
-            if (is_array($value)) {
+            if (is_array($value) || is_scalar($value)) {
                 $cache = wp_cache_get($objectId, $this->getObjectType() . '_meta');
                 if (false === $cache) {
                     $cache = [];
                 }
-                $cache[$this->getKey()] = $value = $this->import($value);
+                $cache[$this->getKey()][0]= $value = $this->import($value);
                 wp_cache_replace($objectId, $cache, $this->getObjectType() . '_meta');
             }
         } else {
@@ -225,22 +225,25 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
                     );
                     $this->dieValidationError($description, $result, $metaValue);
                 } else {
-                    $desc = sprintf(
-                        __(
-                            'The value \'%s\' for custom field \'%s\' is invalid and replaced with the default value \'%s\'.',
-                            'axis3'
-                        ),
-                        $metaValue,
-                        $this->getLabel(),
-                        $this->getDefault(ValueTypeInterface::DEFAULT_CONTEXT_VERIFY)
-                    );
-                    add_settings_error(
-                        "{$objectType}-{$objectSubtype}",
-                        'warning-' . $this->getKey(),
-                        $desc,
-                        'warning'
-                    );
-                    return $this->export($this->getDefault(ValueTypeInterface::DEFAULT_CONTEXT_VERIFY));
+                    $defaultValue = $this->getDefault(ValueTypeInterface::DEFAULT_CONTEXT_VERIFY);
+                    if ($metaValue != $defaultValue) {
+                        $desc = sprintf(
+                            __(
+                                'The value \'%s\' for custom field \'%s\' is invalid and replaced with the default value \'%s\'.',
+                                'axis3'
+                            ),
+                            $metaValue,
+                            $this->getLabel(),
+                            $defaultValue
+                        );
+                        add_settings_error(
+                            "{$objectType}-{$objectSubtype}",
+                            'warning-' . $this->getKey(),
+                            $desc,
+                            'warning'
+                        );
+                    }
+                    return $this->export($defaultValue);
                 }
             }
         }

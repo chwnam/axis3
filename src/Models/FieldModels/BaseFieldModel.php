@@ -5,6 +5,7 @@ namespace Shoplic\Axis3\Models\FieldModels;
 use Shoplic\Axis3\Interfaces\Models\FieldModels\FieldModelInterface;
 use Shoplic\Axis3\Interfaces\Models\ValueTypes\ValueTypeInterface;
 use Shoplic\Axis3\Models\BaseModel;
+use Shoplic\Axis3\Models\ValueTypes\DatetimeType;
 use Shoplic\Axis3\Models\ValueTypes\ValueObjectType;
 
 /**
@@ -33,7 +34,8 @@ abstract class BaseFieldModel extends BaseModel implements FieldModelInterface
         }
 
         if (is_null($this->args['updateCache'])) {
-            $this->args['updateCache'] = $this->getValueType() instanceof ValueObjectType;
+            $valueType                 = $this->getValueType();
+            $this->args['updateCache'] = ($valueType instanceof ValueObjectType) || ($valueType instanceof DatetimeType);
         }
 
         if (!did_action('plugins_loaded')) {
@@ -218,9 +220,10 @@ abstract class BaseFieldModel extends BaseModel implements FieldModelInterface
              *            그래서 다음 get_option() 시에는 import()를 거친 값이 바로 불리도록 처리한다.
              *            null 값은 'valueType' 인자를 보고 판단한다. 판단 기준은 아래와 같다.
              *             - ObjectValueType 이면 true
+             *             - DateTimeType 이면 true
              *             - 이외의 경우는 false
              */
-            'updateCache' => null,
+            'updateCache'      => null,
 
             /**
              * callable: sanitize(), verify() 기본 메소드에서 이 파라미터에 정의된 콜백을 실행합니다.
