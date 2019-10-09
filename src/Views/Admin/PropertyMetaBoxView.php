@@ -24,7 +24,7 @@ abstract class PropertyMetaBoxView extends MetaBoxView
      *
      * @return FieldWidgetInterface[]
      */
-    abstract public function getFieldWidgets($post);
+    abstract public function getFieldWidgets($post): array;
 
     public function dispatch(WP_Post $post)
     {
