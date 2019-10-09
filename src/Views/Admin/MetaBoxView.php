@@ -16,20 +16,6 @@ use WP_Post;
 abstract class MetaBoxView extends BaseView
 {
     /**
-     * nonce 액션값을 리턴해야 한다. 출력시 폼에 반드시 삽입하라.
-     *
-     * @return string
-     */
-    abstract public function getNonceAction(): string;
-
-    /**
-     * nonce 파라미터 문자열을 리턴해야 한다. 출력시 폼에 반드시 삽입하라.
-     *
-     * @return string
-     */
-    abstract public function getNonceParam(): string;
-
-    /**
      * 이 메타박스의 아이디. 메타박스 출력시 HTML ID 속성으로도 활용된다.
      *
      * @return string
@@ -51,6 +37,26 @@ abstract class MetaBoxView extends BaseView
      * @return void
      */
     abstract public function dispatch(WP_Post $post);
+
+    /**
+     * nonce 액션값을 리턴해야 한다. 출력시 폼에 반드시 삽입하라.
+     *
+     * @return string
+     */
+    public function getNonceAction(): string
+    {
+        return sanitize_key($this->getId());
+    }
+
+    /**
+     * nonce 파라미터 문자열을 리턴해야 한다. 출력시 폼에 반드시 삽입하라.
+     *
+     * @return string
+     */
+    public function getNonceParam(): string
+    {
+        return 'nonce-' . sanitize_key($this->getId());
+    }
 
     /**
      * 기본 메뉴 콜백을 리턴합니다.
