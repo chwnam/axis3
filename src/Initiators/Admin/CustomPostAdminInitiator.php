@@ -15,13 +15,10 @@ use function Shoplic\Axis3\Functions\callbackFreeTask;
  * @package Shoplic\Axis3\Initiators\Admin
  * @since   1.0.0
  */
-class CustomPostAdminInitiator extends AutoHookInitiator
+abstract class CustomPostAdminInitiator extends AutoHookInitiator
 {
     const KEY_ACTION_ADD_META_BOXES = 'add_meta_boxes';
     const KEY_ACTION_SAVE_POST      = 'save_post';
-
-    /** @var CustomPostModelInterface 이 객체가 관리해야 하는 모델 */
-    private $model = null;
 
     /** @var string[] 미리 정의된 기능의 키워드 */
     private $keywords = [];
@@ -30,6 +27,8 @@ class CustomPostAdminInitiator extends AutoHookInitiator
     private $metaBoxViews = [];
 
     private $settingErrors = [];
+
+    abstract public function getModel(): CustomPostModelInterface;
 
     public function action_current_screen(WP_Screen $screen)
     {
@@ -104,18 +103,6 @@ class CustomPostAdminInitiator extends AutoHookInitiator
         wp_enqueue_style('axis3-field-widgets');
     }
 
-    public function getModel()
-    {
-        return $this->model;
-    }
-
-    public function setModel($model)
-    {
-        $this->model = $model;
-
-        return $this;
-    }
-
     public function enableKeyword(string $keyword): CustomPostAdminInitiator
     {
         $this->keywords[$keyword] = true;
@@ -178,7 +165,7 @@ class CustomPostAdminInitiator extends AutoHookInitiator
         if (
             $updated &&
             $postId == $post->ID &&
-            $post->post_type == $this->model->getPostType() &&
+            $post->post_type == $this->getModel()->getPostType() &&
             $post->post_status !== 'trash' &&
             !(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) &&
             current_user_can('edit_post', $postId)
