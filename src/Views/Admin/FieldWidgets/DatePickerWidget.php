@@ -130,7 +130,7 @@ class DatePickerWidget extends BaseFieldWidget
 
         wp_add_inline_script(
             'axis3-datepicker-widget',
-            "$('#{$this->getId()}-picker').axis3Datepicker({$opt});"
+            "jQuery('#{$this->getId()}-picker').axis3Datepicker({$opt});"
         );
     }
 
