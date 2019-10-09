@@ -192,61 +192,37 @@ require_once __DIR__ . '/axis3/axis3.php';
  * Version:     1.0.0
  */
 
-use Shoplic\Axis3\Starters\ClassFinders\AutoDiscoverClassFinder;
-use Shoplic\Axis3\Starters\Starter;
+require_once __DIR__ . '/vendor/autoload.php';
 
 define('MY_PLUGIN_MAIN', __FILE__);
 define('MY_PLUGIN_VERSION', '1.0.0');
 
-require_once __DIR__ . '/vendor/autoload.php';
-
 try {
-    $starter         = new Starter();
-    $initiatorFinder = new AutoDiscoverClassFinder();
-    $modelFinder     = new AutoDiscoverClassFinder();
-
-    // initiator setup
-    $initiatorFinder->setComponentPostfix('Initiator');
-    $initiatorFinder->setRootPath(dirname(MY_PLUGIN_MAIN) . '/src/Initiators');
-    $initiatorFinder->setRootNamespace('MyName\\MyPlugin\\Initiators\\');
-    $starter->addClassFinder($initiatorFinder);
-
-    // model setup
-    $modelFinder->setComponentPostfix('Model');
-    $modelFinder->setRootPath(dirname(MY_PLUGIN_MAIN) . '/src/Models');
-    $modelFinder->setRootNamespace('MyName\\MyPlugin\\Models\\');
-    $starter->addClassFinder($modelFinder);
-
-    $starter->setMainFile(MY_PLUGIN_MAIN);
-    $starter->setVersion(MY_PLUGIN_VERSION);
-    $starter->setPrefix('my_plugin');
-    $starter->start();
+    $args = [
+        'mainFile'  => MY_PLUGIN_MAIN,
+        'version'   => MY_PLUGIN_VERSION,
+        'namespace' => 'MyName\\MyPlugin\\',
+        'prefix'    => 'my_plugin',
+    ];
+    Shoplic\Axis3\Starters\Starter::factory($args)->start();
 } catch (Exception $e) {
     wp_die($e->getMessage());
 }
 ```
 
-메인 파일에서는 서로 다른 두 종류의 객체를 총 3개 생성합니다.
-Starter 클래스와 AutoDiscoverClassFinder 클래스 입니다. Starter 클래스는 플러그인을 시동시키며
-플러그인의 뿌리가 되는 역할을 맡습니다. 한 플러그인은 적어도 이 Starter 인스턴스를 공유하게 됩니다.
-
-AutoDiscoverClassFinder 클래스는 지정된 경로에서 규칙에 맞는 파일을 재귀적으로 검색하고, 파일 이름으로부터 FQCN 
-(Fully Qualified Class Name)을 얻어냅니다. 파일로부터 컴포넌트 목록을 자동으로 검색하므로 일일이 초기화할 필요가 없습니다.
-
-첫번째로 만든 `$initiatorFinder`는 `my-plugin/src/Initiators`에서 `*Initiator.php` 파일 목록을 찾아냅니다. 이 파일들은
-개시자(Initiator)라고 불리는 콤포넌트 요소입니다. 개시자는 액션과 필터 콜백 선언에 특화된 콤포넌트입니다.
-
-두번째로 만든 `$modelFinder`는 `my-plugin/src/Models`에서 `*Model.php` 파일 목록을 찾아냅니다. 이것들은 모델(Model)
-콤포넌트 입니다. MVC 패턴에서 말하는 모델입니다. 모델은 워드프레스의 환경에 맞게 커스텀 포스트와 메타 필드 
-옵션과 택소노미, 역할과 권한과도 밀접한 관계가 있습니다.
-   
-마지막으로 플러그인 어디에서도 메인 파일과 버전을 쉽게 알게 하기 위해 메인 파일과 버전을 설정하고,
-플러그인의 접두어를 지정합니다. 그리고 마지막으로 스타터를 시동합니다. 
+기본적인 구성을 사용하면 `Shoplic\Axis3\Starters\Starter::factory()` 메소드를 이용해 손쉽게 개시자(Starter)를 
+생성할 수 있습니다. 이 메소드는 배열을 필요로 하는데, 배열에는 'mainFile', 'version', 'namespace' 키를 필수로 합니다.
+그리고 예제에서는 플러그인의 접두어를 별도로 지정했습니다. 여기서 접두어는 'my_plugin'으로, 이렇게 하면 플러그인은
+모든 메타 키, 옵션의 이름 앞에 'my_plugin_'을 붙입니다. 접두어를 통해 데이터베이스 테이블에서 쉽게 플러그인이 생성한
+레코드임을 식별할 수 있습니다. 'my_plugin'을 입력할 때는 뒤에 언더바(_)가 붙는 것은 생략해도 됩니다.
+ 
+마마지막으로 스타터를 시동합니다. 시동은 `start()` 메소드입니다. 만약 에러가 나면 wp_die()에서 워드프레스 시동이 
+중단되고 에러 메시지가 출력될 것입니다. 
  
 
 #### Dump Autoload
 웹브라우저로 워드프레스 사이트에 접속하면 에러가 날 수 있습니다.
-왜냐면 아직 vendor/autoload.php 파일을 생성하지 않았는데 require_once 명령으로 autoload.php 파일을 가져로려고
+왜냐면 아직 vendor/autoload.php 파일을 생성하지 않았는데 require_once 구문으로 autoload.php 파일을 가져오려고
 하기 때문입니다. 다음 명령으로 autoload 관련 파일이 자동 생성되도록 합니다.
 ```
 composer dump-autoload
@@ -285,8 +261,10 @@ class MyCptModel extends CustomPostModel
     }
 }
 ```
-복잡한 파라미터는 제외하고 가장 필수적인 요소만 선보였습니다. 잘 보면 [register_post_type()](https://codex.wordpress.org/Function_Reference/register_post_type)
-각 파라미터를 메소드로 분리한 것을 파악하실 수 있을 겁니다. 첫번째 인자는 `getPostType()`, 두번째는 `getPostTypeArgs()`에 대응됩니다.
+복잡한 파라미터는 제외하고 가장 필수적인 요소만 선보였습니다. 잘 보면
+[register_post_type()](https://codex.wordpress.org/Function_Reference/register_post_type) 함수의 
+각 파라미터를 메소드로 분리한 것임을 알 수 있습니다.
+첫번째 인자는 `getPostType()`, 두번째는 `getPostTypeArgs()`에 대응됩니다.
 `getPostType()`은 정적 메소드로 어디서든 `MyCptModel::getPostType()`로 얻을 수 있습니다. 코드 힌트의 도움을 얻으면 
 일일이 커스텀 포스트 이름 문자열을 기억하지 않아도 되어 편리합니다.
 
@@ -294,7 +272,7 @@ class MyCptModel extends CustomPostModel
 
 ![](img/my-cpt.png)
 
-##### 커스텀 필드 추가
+#### 커스텀 필드 추가
 커스텀 포스트를 클래스로 관리하는 것의 이점은 커스텀 포스트와 관련된 코드를 한 클래스에서 집중적으로 관리할 수 있다는
 것입니다. 포스트를 정의하고, 포스트의 커스텀 필드도 한 클래스에서 정의합니다. 이로 인해 포스트와 포스트 메타의 관계가
 보다 분명하게 파악됩니다.
@@ -430,6 +408,8 @@ public function getFieldMyTextField()
 두번째 인자는 익명함수로 배열을 리턴합니다. 이 배열은 메타필드 모델을 정의할 때 사용되는 인자들입니다.
 이 중 'valueType'인자는 필수적으로 이 모델의 값이 어떤 타입인지 명시하는 역할을 맡습니다
 'label', 'description'은 이 모델에 대한 설명으로 이 모델이 어떤 일을 하는지 서술하는 역할을 맡습니다.
+
+#### 메타박스를 이용해 커스텀 필드 출력
 
 
 #### 커스텀 택소노미 만들기
