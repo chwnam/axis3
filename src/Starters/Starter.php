@@ -8,6 +8,7 @@ use Shoplic\Axis3\Interfaces\Initiators\InitiatorInterface;
 use Shoplic\Axis3\Interfaces\Objects\AxisObjectInterface;
 use Shoplic\Axis3\Interfaces\Starters\ClassFinders\ClassFinderInterface;
 use Shoplic\Axis3\Interfaces\Starters\StarterInterface;
+use Shoplic\Axis3\Starters\ClassFinders\AutoDiscoverClassFinder;
 
 /**
  * Class Starter
@@ -324,6 +325,88 @@ class Starter implements StarterInterface
         }
 
         return $instance;
+    }
+
+    /**
+     * 스타터를 가장 간단한 세팅으로 맞춘다.
+     *
+     * @param array|string $args
+     *
+     * @return self
+     * @throws Exception
+     */
+    public static function factory($args = ''): Starter
+    {
+        $defaults = [
+            // 필수 요소
+            //
+            // string: 플러그인 메인 파일.
+            'mainFile'   => '',
+
+            // string: 플러그인의 네임스페이스.
+            'namespace'  => '',
+
+            // string: 플러그인의  버전.
+            'version'    => '',
+
+            // 선택 요소
+            //
+            // null|int|int[]|callable: 블로그 아이디. 싱글 사이트를 위해서는 필요 없음.
+            'blogId'     => null,
+
+            // string: 플러그인 접두사. 지정하지 않으면 메인 파일 이름으로부터 추출.
+            'prefix'     => null,
+
+            // string: 플러그인 슬러그. 지정하지 않으면 메인 파일 이름으로부터 추출.
+            'slug'       => null,
+
+            // string: 텍스트도메인. 지정하지 않으면 메인 파일 이름으로부터 추출.
+            'textdomain' => null,
+        ];
+
+        $args = wp_parse_args($args, $defaults);
+
+        if (!$args['mainFile']) {
+            throw new Exception(__('\'mainFile\' parameter is required.', 'axis3'));
+        } elseif (!isset($args['namespace'])) {
+            throw new Exception(__('\'namespace\' parameter should be set.', 'axis3'));
+        } elseif (!$args['version']) {
+            throw new Exception(__('\'version\' parameter is required.', 'axis3'));
+        }
+
+        $starter = (new Starter())
+            ->addClassFinder(
+                (new AutoDiscoverClassFinder())
+                    ->setComponentPostfix('Initiator')
+                    ->setRootPath(dirname($args['mainFile']) . '/src/Initiators')
+                    ->setRootNamespace(trim($args['namespace'], '\\') . '\\Initiators\\')
+            )
+            ->addClassFinder(
+                (new AutoDiscoverClassFinder())
+                    ->setComponentPostfix('Model')
+                    ->setRootPath(dirname($args['mainFile']) . '/src/Models')
+                    ->setRootNamespace(trim($args['namespace'], '\\') . '\\Models\\')
+            )
+            ->setMainFile($args['mainFile'])
+            ->setVersion($args['version']);
+
+        if ($args['blogId']) {
+            $starter->setBlogId($args['blogId']);
+        }
+
+        if ($args['prefix']) {
+            $starter->setPrefix($args['prefix']);
+        }
+
+        if ($args['slug']) {
+            $starter->setSlug($args['slug']);
+        }
+
+        if ($args['textdomain']) {
+            $starter->setTextdomain($args['textdomain']);
+        }
+
+        return $starter;
     }
 
     /**
