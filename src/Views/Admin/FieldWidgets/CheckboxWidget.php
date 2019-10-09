@@ -23,6 +23,7 @@ class CheckboxWidget extends BaseFieldWidget
             [
                 'id'       => $this->getId(),
                 'name'     => $this->getName(),
+                'class'    => 'axis3-field-widget axis3-checkbox-widget',
                 'type'     => 'checkbox',
                 'value'    => 'yes',
                 'required' => $this->isRequired(),
@@ -34,12 +35,10 @@ class CheckboxWidget extends BaseFieldWidget
 
         $labelAttrs = wp_parse_args(
             $this->args['labelAttrs'],
-            [
-                'for' => $inputAttrs['id'],
-            ]
+            ['for' => $inputAttrs['id']]
         );
         openTag('label', $labelAttrs);
-        wp_kses_post($this->getDescription());
+        echo wp_kses_post($this->getDescription());
         closeTag('label');
     }
 
