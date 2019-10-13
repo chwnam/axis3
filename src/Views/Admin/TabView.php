@@ -6,8 +6,10 @@ class TabView extends SplitView
 {
     public function __construct()
     {
-        $this->setParam('tab');
-        $this->setTemplate('generics/generic-tabs.php');
+        $this
+            ->setParam('tab')
+            ->addAllowedParam('page')
+            ->setTemplate('generics/generic-tabs.php');
     }
 
     protected function renderItems()

@@ -26,7 +26,7 @@ $total_count = count($sections);
         <?php foreach ($sections as $idx => $section) : ?>
             <li>
                 <a href="<?php echo esc_url($section['url'] ?? ''); ?>"
-                   class="<?php echo sanitize_html_class($section['class'] ?? '') ?>"
+                   class="<?php echo esc_attr($section['class'] ?? ''); ?>"
                 ><?php echo esc_html($section['label'] ?? ''); ?></a>
                 <?php echo ($idx + 1 < $total_count) ? '|' : ''; ?>
             </li>

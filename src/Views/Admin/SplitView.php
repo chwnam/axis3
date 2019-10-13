@@ -37,7 +37,7 @@ abstract class SplitView extends BaseView
         }
     }
 
-    public function addItem(string $slug, string $label, $view, array $args = [], bool $reuse = true)
+    public function addItem(string $slug, string $label, $view, array $args = [], bool $reuse = true): SplitView
     {
         $slug = sanitize_key($slug);
 
@@ -49,6 +49,8 @@ abstract class SplitView extends BaseView
                 'reuse' => $reuse,
             ];
         }
+
+        return $this;
     }
 
     public function getCurrent(): string
@@ -64,7 +66,7 @@ abstract class SplitView extends BaseView
         return $this->template;
     }
 
-    public function setTemplate(string $template)
+    public function setTemplate(string $template): SplitView
     {
         $this->template = $template;
 
@@ -74,13 +76,13 @@ abstract class SplitView extends BaseView
     public function getBaseUrl(): string
     {
         if (!$this->baseUrl) {
-            $this->setBaseUrl(null);
+            $this->setBaseUrl($_SERVER['REQUEST_URI'] ?? null);
         }
 
         return $this->baseUrl;
     }
 
-    public function setBaseUrl($url)
+    public function setBaseUrl($url): SplitView
     {
         $query   = parse_url($url, PHP_URL_QUERY);
         $baseUrl = getCleanUrlPath($url);
@@ -101,12 +103,22 @@ abstract class SplitView extends BaseView
         return $this->items;
     }
 
-    public function addAllowedParam(string $param, string $value = '')
+    public function addAllowedParam(string $param, string $value = ''): SplitView
     {
         $param = sanitize_key($param);
+        $value = sanitize_key($value);
 
         if ($param && $param !== $this->getParam()) {
             $this->allowedParams[$param] = $value;
+        }
+
+        return $this;
+    }
+
+    public function removeAllowedParam(string $param): SplitView
+    {
+        if (isset($this->allowedParams[$param])) {
+            unset($this->allowedParams[$param]);
         }
 
         return $this;
@@ -122,14 +134,12 @@ abstract class SplitView extends BaseView
         return $this->param;
     }
 
-    public function setParam(string $param)
+    public function setParam(string $param): SplitView
     {
         $param = sanitize_key($param);
-
         if ($param) {
-            $pos = array_search($param, $this->allowedParams, true);
-            if (false !== $pos) {
-                unset($this->allowedParams[$pos]);
+            if (isset($this->allowedParams[$param])) {
+                unset($this->allowedParams[$param]);
             }
             $this->param = $param;
         }

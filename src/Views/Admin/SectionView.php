@@ -6,8 +6,11 @@ class SectionView extends SplitView
 {
     public function __construct()
     {
-        $this->setParam('section');
-        $this->setTemplate('generics/generic-sections.php');
+        $this
+            ->setParam('section')
+            ->addAllowedParam('tab')
+            ->addAllowedParam('page')
+            ->setTemplate('generics/generic-sections.php');
     }
 
     protected function renderItems()
@@ -18,8 +21,8 @@ class SectionView extends SplitView
         $sections = [];
 
         foreach ($this->getItems() as $slug => $sectionInfo) {
-            $sections[$slug] = [
-                'class' => [($current === $slug ? 'current' : '')],
+            $sections[] = [
+                'class' => $current === $slug ? 'current' : '',
                 'url'   => add_query_arg($param, $slug, $baseUrl),
                 'label' => $sectionInfo['label'],
             ];
