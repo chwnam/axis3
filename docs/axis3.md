@@ -1,83 +1,5 @@
-# Axis3
+# Axis3 소개 
 
-* Axis3 소개
-* 시작하기
-    * 설치하기
-        * composer 설치
-        * 소스 다운로드
-        * 셋업
-    * 플러그인 작성
-        * composer.json 설정
-        * Autoloader 설정
-        * 플러그인 소스 코드 구조
-        * 기본 코드 작성
-    * 커스텀 포스트 만들기
-        * 파라미터 넣기
-        * 커스텀 필드 추가
-    * 커스텀 택소노미 만들기
-        * 파라미터 작성
-    * 설정 페이지 만들기
-        * 옵션 설정하기
-        * 옵션 페이지 만들기
-* Axis 콤포넌트
-    * 개시자
-        * 오브젝트 캐싱
-    * 클래스 검색자
-        * 모델과 전수자의 검색 설정
-    * 전수자
-        * 전수자에서 액션과 필터 설정
-        * 자동 전수자
-        * 전수자와 문맥
-        * 전수자에서 뷰로 콜백 위임
-        * 유용한 전수자
-            * 모델 자동 등록 전수자
-            * 관리 화면 전수자
-    * 모델
-        * 필드 모델
-            * 메타 필드 모델
-            * 옵션 필드 모델
-        * 값 타입
-            * 문자열 타입
-            * 정수 타입
-            * 실수 타입
-            * 날짜 시간 타입
-            * 배열 타입
-            * IP 타입
-            * 객체값 타입
-            * 더미 타입
-            * 새로운 값 타입 만들기
-        * 커스텀 포스트
-        * 커스텀 택소노미
-        * 역할과 권한
-        * 커스텀 필드
-        * 옵션 필드
-    * 뷰
-        * 위임된 전수자 처리
-        * 뷰와 템플릿
-        * 필드 위젯 뷰
-            * 입력상자 (&lt;input&gt;) 위젯
-            * 선택상자 (&lt;select&gt;) 위젯
-            * 체크박스 위젯
-            * 체크박스/라디오 위젯
-            * 날짜 선택 위젯
-            * 텍스트영역 (&lttextarea&gt;) 위젯
-            * 일반 위젯
-            * 새로운 필드 위젯 만들기
-        * 유용한 뷰
-            * 탭 뷰
-            * 섹션 뷰
-            * 메타 박스 뷰
-            * 속성 메타 박스 뷰
-            * 쇼트코드 뷰
-            * 셋팅 뷰
-            * 메뉴 페이지 뷰
-            * 서브메뉴 페이지 뷰
-* Axis 확장
-    * CLI (Command Line Interface)
-    * 플러그인 구조 리포팅  
-
-
-## Axis3 소개 
 Axis3 (액시스 3)는 워드프레스 플러그인 형태의 프레임워크로서 다른 플러그인의 코드 작성을 지원하기 위하여 개발되었습니다.
 Axis3를 사용하면 보다 객체지향적으로 플러그인을 구성할 수 있으면, 고수준의 데이터 처리 뿐 아니라 프레임워크가 기본적으로
 제공하는 편리하고 강건한 기능들을 다시 개발할 필요 없이 그대로 가져와 재사용이 가능합니다.
@@ -156,7 +78,6 @@ require_once __DIR__ . '/axis3/axis3.php';
 예제 플러그인은 `wp-content/plugins/my-plugin/my-plugin.php`을 메인 파일로 합니다.
 특별한 기능알 목표로 하는 것은 아니지만, axis3 기반의 플러그인은 이러한 구조를 가질 수 있다는 것을 보이는 
 예시라고 생각하시면 됩니다.
-
 
 #### composer.json 설정
 `wp-content/plugins/my-plugin/composer.json` 예제입니다.
@@ -442,7 +363,7 @@ PHP 코드에서 보다 엄격하게 타입을 제한하기 위함입니다. 메
 namespace MyName\MyPlugin\Initiators\Admin;
 
 use MyName\MyPlugin\Models\MyCptModel;
-use MyName\MyPlugin\Views\Admin\MetaBoxes\MyCptMetaBoxView;
+use MyName\MyPlugin\Views\MyCptMetaBoxView;
 use Shoplic\Axis3\Initiators\Admin\CustomPostAdminInitiator as CptInitiator;
 use Shoplic\Axis3\Interfaces\Models\CustomPostModelInterface;
 
@@ -473,7 +394,7 @@ class MyCptAdminInitiator extends CptInitiator
 /** my-plugin/src/Views/Admin/MetaBoxes/MyCptMetaBoxView.php */
 
 
-namespace MyName\MyPlugin\Views\Admin\MetaBoxes;
+namespace MyName\MyPlugin\Views;
 
 use MyName\MyPlugin\Models\MyCptModel;
 use Shoplic\Axis3\Views\Admin\FieldWidgets\CheckboxWidget;
@@ -610,12 +531,179 @@ Axis3를 사용하면 필드는 필드의 외관을 담당하는 위젯 뷰와 �
 이렇게 메타박스 뷰까지 작성하면 그림처럼 필드가 출력됩니다. 표 관련 HTML 코딩 없이도 
 관리자 화면에서 적절한 폼 테이블이 출력됩니다. 그리고 전수자에서 저장 관련 코드도 활성화시켜 두었습니다.
 폼에 값을 입력하고 업데이트 버튼을 누르면 메타 값이 잘 저장됩니다. Axis3가 메타 값 저장 로직도 미리 구현해 두었기 때문에
-다시 구현 코드를 작성할 필요가 없습니다. 
+일일이 메타 필드에 대한 구현 코드를 작성할 필요가 없습니다. 
 
 ![](img/my-cpt-meta-box.png)
 
 #### 커스텀 택소노미 만들기
-##### 파라미터
-* 설정 페이지 만들기
-    * 옵션 설정하기
-    * 옵션 페이지 만들기
+Axis3는 택소노미도 모델로 선언할 수 있습니다. 택소노미는 `TaxonomyModel` 클래스를 상속하여 정의하면 됩니다.
+
+```php
+<?php
+/** my-plugin/src/Models/MyCatModel.php */
+
+namespace MyName\MyPlugin\Models;
+
+use Shoplic\Axis3\Models\TaxonomyModel;
+
+class MyCatModel extends TaxonomyModel
+{
+    public static function getTaxonomy(): string
+    {
+        return 'my_cat';
+    }
+
+    public function getTaxonomyArgs(): array
+    {
+        return [
+            'label'             => 'MyCat',
+            'public'            => true,
+            'show_admin_column' => true,
+            'hierarchical'      => true,
+        ];
+    }
+
+    public function getObjectType()
+    {
+        return [MyCptModel::getPostType()];
+    }
+}
+```
+
+이렇게 하면 카테고리 같은 택소노미 'my_cat'이 만들어집니다.
+
+![](img/my-cat-001.png)
+
+![](img/my-cat-002.png)
+
+#### 탭과 섹션 메뉴 생성
+Axis3는 관리자 페이지에서 커스텀 메뉴와 탭, 그리고 섹션을 손쉽게 작성할 수 있도록 합니다. 
+다음처럼 페이지를 구성하도록 하겠습니다.
+
+```
+MyMenu [커스텀 메뉴 페이지]
+|
+|---* MyTab1 [탭 1]: 설정 페이지 출력
+|
+|---* MyTab2 [탭 2]
+      |
+      |--* MySection1 [섹션 1]: 간단 출력
+      |
+      |--* MySection2 [섹션 2]: 간단 출력
+```
+
+메뉴를 넣기 위해 액션을 추가해야 합니다. 새 전수자를 선언하도록 해 보겠습니다.
+```php
+<?php
+/** my-plugin/src/Initiators/Admin/MenuInitiator.php */
+
+namespace MyName\MyPlugin\Initiators\Admin;
+
+use MyName\MyPlugin\Views\MyMenuView;
+use Shoplic\Axis3\Initiators\SimpleInitiator;
+
+class MenuInitiator extends SimpleInitiator
+{
+    protected function contextHandlerAdmin()
+    {
+        $this->addAction('admin_menu', [MyMenuView::class, 'addMenuPage']);
+    }
+}
+```
+
+전수자에서 콜백으로 선언한 클래스를 작성합니다. 메뉴 페이지를 만들기 위해 `MenuPageView`를 상속합니다.
+```php
+<?php
+/** my-plugin/src/Views/MyMenuView.php */
+
+namespace MyName\MyPlugin\Views;
+
+use Shoplic\Axis3\Views\Admin\MenuPageView;
+use Shoplic\Axis3\Views\Admin\TabView;
+
+class MyMenuView extends MenuPageView
+{
+    public function getPageTitle(): string
+    {
+        return 'MyMenu';
+    }
+
+    public function getMenuTitle(): string
+    {
+        return 'MyMenu';
+    }
+
+    public function getCapability(): string
+    {
+        return 'manage_options';
+    }
+
+    public function getMenuSlug(): string
+    {
+        return 'my_menu';
+    }
+
+    public function dispatch()
+    {
+        /** @var TabView $tabView */
+        $tabView = $this->claimView(TabView::class, [], false);
+
+        $tabView
+            ->addItem('my-tab-1', 'MyTab1', [MyTab1::class, 'dispatch'])
+            ->addItem('my-tab-2', 'MyTab2', [MyTab2::class, 'dispatch'])
+            ->dispatch();
+    }
+}
+
+``` 
+클래스의 이름을 보면 [add_menu_page()](https://developer.wordpress.org/reference/functions/add_menu_page/)에 선언된
+파라미터와 유사합니다. `MenuPageView`는 add_menu_page() 함수를 객체지향적으로 래핑한 클래스이기 때문입니다.
+
+`dispatch()` 메소드는 실제로 페이지 내용을 출력하는 곳입니다. 그러나 이 메소드는 직접 내용을 출력하지 않습니다.
+메소드 내부에서 다른 뷰를 선언하여 출력을 위임하고 있습니다.
+
+출력을 위임받은 뷰는 탭 뷰입니다. 화면에 탭을 그리도록 도와주는 뷰입니다. 이 뷰에 두 개의 탭을 삽입하고,
+탭을 선택했을 때 탭의 내용을 그리는 하위 뷰 콜백을 지정해 줍니다. 여기서는 각각 `MyTab1::dispatch()`,
+`MyTab2::dispatch()`가 됩니다. `MyTab1::dispatch()`에서는 옵션 설정 페이지를 출력할 것이고, `MyTab2::dispatch()`에는
+섹션 2개를 넣습니다.
+
+여기서는 섹션 2개를 넣은 `MyTab2` 클래스의 코드만을 보여줍니다. 설정 페이지는 다음 섹션에서 설명을 이어갑니다.
+
+```php
+<?php
+/** my-plugin/src/Views/MyTab2.php */
+
+namespace MyName\MyPlugin\Views;
+
+use Shoplic\Axis3\Views\Admin\SectionView;
+use Shoplic\Axis3\Views\BaseView;
+
+class MyTab2 extends BaseView
+{
+    public function dispatch()
+    {
+        /** @var SectionView $sectionView */
+        $sectionView = $this->claimView(SectionView::class, [], false);
+
+        $sectionView
+            ->addItem('my-section-1', 'MySection1', function () {
+                echo '<h2>MySection1</h2>';
+            })
+            ->addItem('my-section-2', 'MySection2', function () {
+                echo '<h2>MySection2</h2>';
+            })
+            ->dispatch();
+    }
+}
+```
+
+탭과 섹션은 유사한 구조를 가지고 있고 사용법은 크게 다르지 않습니다. 섹션을 생성할 때 `claimView()` 메소드의 세 번째
+인자를 'false'로 주고 있습니다. 이것은 만약 섹션을 여러번 선언해도 항상 새로운 객체를 생성하기 위함입니다.
+색션 항목으로 섹션의 슬러그(URL에 포함하기 위한), 레이블(화면에 표시하기 위한), 콜백(실제 내용)을 입력하면 됩니다.
+콜백은 예시처럼 콜백 함수나 길이 2인 배열(인덱스 0: Axis 뷰 클래스 FQCN, 인덱스 1: 클래스 메소드 이름)을 입력합니다.
+섹션 출력을 위해 `dispatch()` 메소도를 호출하는 것을 잊지 마세요.
+
+
+#### 옵션 모델 만들기
+ 
+#### 옵션 페이지 만들기
