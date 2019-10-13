@@ -275,27 +275,10 @@ class BaseView extends AxisObject implements ViewInterface
             ob_start();
         }
 
-        $__axis_var_keep__ = [];
-
-        if (!empty($context)) {
-            foreach ($context as $__axis_key__ => $__axis_val__) {
-                $__axis_key__ = str_replace('-', '_', $__axis_key__);
-                if (isset(${$__axis_key__})) {
-                    $__axis_var_keep__[$__axis_key__] = ${$__axis_key__};
-                }
-                ${$__axis_key__} = $__axis_val__;
-            }
-            unset($__axis_key__, $__axis_val__);
-        }
+        extract($context, EXTR_SKIP);
 
         /** @noinspection PhpIncludeInspection */
         include $templateFile;
-
-        if (!empty($context)) {
-            foreach ($__axis_var_keep__ as $__axis_key__ => $__axis_val__) {
-                ${$__axis_key__} = $__axis_val__;
-            }
-        }
 
         return $return ? ob_get_clean() : null;
     }
