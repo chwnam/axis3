@@ -41,6 +41,23 @@ span.axis3-widget-required:after {
     margin-bottom: 6px;
 }
 
+.axis3-checkbox-radio {
+    margin: 0;
+}
+
+.axis3-checkbox-radio.horizontal > li {
+    float: left;
+    margin: 0;
+}
+
+.axis3-checkbox-radio.horizontal > li:not(:last-child) {
+    margin-right: 16px;
+}
+
+.axis3-checkbox-radio.horizontal > li:last-child {
+    margin-right: 0;
+}
+
 @media screen and  (max-width: 782px) {
     .text.axis3-datepicker-widget {
         width: 180px !important;

@@ -30,7 +30,7 @@ class CheckboxRadioWidget extends BaseFieldWidget
                     $this->args['inputAttrs'],
                     [
                         'id'       => "{$this->getId()}-$value",
-                        'name'     => $this->getName() . '[]',
+                        'name'     => $this->getName() . ('checkbox' === $this->args['type'] ? '[]' : ''),
                         'class'    => 'axis3-checkbox-radio',
                         'type'     => $this->args['type'],
                         'required' => $this->isRequired(),
@@ -69,7 +69,7 @@ class CheckboxRadioWidget extends BaseFieldWidget
                 /**
                  * string: 템플릿.
                  */
-                'template'     => 'generics/checkbox-radio.php',
+                'template'     => 'generics/generic-checkbox-radio.php',
 
                 /**
                  * string: 타입을 설정한다. 'checkbox', 혹은 'radio' 중 하나를 선택할 수 있다.
