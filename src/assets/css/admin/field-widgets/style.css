@@ -12,12 +12,20 @@ span.axis3-widget-required:after {
     color: rgb(255, 0, 0);
 }
 
+.axis3-field-widget.hidden {
+    display: none;
+}
+
 .axis3-field-widget.axis3-classic-editor-widget {
     width: 97%;
 }
 
+.text.axis3-datepicker-widget {
+    width: 160px;
+}
+
 .axis3-field-widget.axis3-google-map-widget .address-field-label,
-.axis3-field-widget.axis3-kakao-map-widget .address-field-label{
+.axis3-field-widget.axis3-kakao-map-widget .address-field-label {
     display: inline-block;
     width: 7%;
 }
@@ -31,4 +39,15 @@ span.axis3-widget-required:after {
 .axis3-field-widget.axis3-kakao-map-widget > div:nth-child(2) {
     margin-top: 10px;
     margin-bottom: 6px;
+}
+
+@media screen and  (max-width: 782px) {
+    .text.axis3-datepicker-widget {
+        width: 180px !important;
+        display: inline-block !important;
+    }
+
+    .button.axis3-datepicker-widget {
+        height: 36px !important;
+    }
 }

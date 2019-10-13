@@ -98,7 +98,7 @@ class DatePickerWidget extends BaseFieldWidget
                 'name'  => $this->getName(),
                 'value' => datetimeI18n($this->getValue(), $this->args['dateFormat']),
                 'class' => 'axis3-field-widget axis3-datepicker-widget hidden',
-                'type'  => 'text',
+                'type'  => 'hidden',
             ]
         );
 
