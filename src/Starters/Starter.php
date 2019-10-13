@@ -351,6 +351,9 @@ class Starter implements StarterInterface
 
             // 선택 요소
             //
+            // null|string: 네임스페이스와 매핑된 디렉토리. null 이면 dirname($mainFile).'/src' 로 지정됨.
+            'mappedPath' => null,
+
             // null|int|int[]|callable: 블로그 아이디. 싱글 사이트를 위해서는 필요 없음.
             'blogId'     => null,
 
@@ -374,17 +377,23 @@ class Starter implements StarterInterface
             throw new Exception(__('\'version\' parameter is required.', 'axis3'));
         }
 
+        if (!$args['mappedPath']) {
+            $mappedPath = dirname($args['mainFile']) . '/src';
+        } else {
+            $mappedPath = $args['mainFile'];
+        }
+
         $starter = (new Starter())
             ->addClassFinder(
                 (new AutoDiscoverClassFinder())
                     ->setComponentPostfix('Initiator')
-                    ->setRootPath(dirname($args['mainFile']) . '/src/Initiators')
+                    ->setRootPath("{$mappedPath}/Initiators")
                     ->setRootNamespace(trim($args['namespace'], '\\') . '\\Initiators\\')
             )
             ->addClassFinder(
                 (new AutoDiscoverClassFinder())
                     ->setComponentPostfix('Model')
-                    ->setRootPath(dirname($args['mainFile']) . '/src/Models')
+                    ->setRootPath("{$mappedPath}/Models")
                     ->setRootNamespace(trim($args['namespace'], '\\') . '\\Models\\')
             )
             ->setMainFile($args['mainFile'])
