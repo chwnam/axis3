@@ -94,10 +94,9 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
      */
     public function updateCache($value)
     {
-        $key   = $this->getKey();
-        $value = $this->import($value);
-
+        $key        = $this->getKey();
         $allOptions = wp_cache_get('alloptions', 'options');
+
         if (isset($allOptions[$key])) {
             $allOptions[$key] = $value;
             wp_cache_set('alloptions', $allOptions, 'options');
