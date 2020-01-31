@@ -70,6 +70,8 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
     {
         if (is_callable($this->args['objectSubtype'])) {
             return call_user_func($this->args['objectSubtype'], $this);
+        } elseif (empty($this->args['objectSubtype'])) {
+            return $this->args['objectType'];
         } else {
             return $this->args['objectSubtype'];
         }
