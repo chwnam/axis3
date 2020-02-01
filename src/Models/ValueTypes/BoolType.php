@@ -33,6 +33,13 @@ class BoolType extends BaseValueType
         return boolval($value);
     }
 
+    public function export($value)
+    {
+        // 옵션이나 메타에서 필드 값이 없을 때 'false'를 리턴한다. 진짜 필드 값을 false 로 설정한 것인지
+        // 필드가 아직 저장되지 않은 건지 모호한 경우가 발생한다. 그런 경우를 방지하기 위해 명시적으로 캐스팅한다.
+        return intval($value);
+    }
+
     public static function getDefaultArgs(): array
     {
         return [];
