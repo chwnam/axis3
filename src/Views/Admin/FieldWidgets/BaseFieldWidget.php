@@ -323,7 +323,8 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
                     'ol'     => [],
                     'p'      => [],
                 ]
-            )
+            ),
+            ENT_COMPAT | ENT_QUOTES
         );
 
         return "<span class='dashicons dashicons-editor-help axis3-widget-tooltip' data-tooltip='{$tooltip}'></span><div class='wp-clearfix'></div>";
