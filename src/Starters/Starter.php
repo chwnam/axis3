@@ -98,6 +98,8 @@ class Starter implements StarterInterface
             $initiator->initHooks();
         }
 
+        StarterPool::getInstance()->addStarter($this);
+
         foreach ($this->getInitiatorClasses() as $context => $initiatorClasses) {
             if ($this->checkContext($context)) {
                 foreach ($initiatorClasses as $initiatorClass) {
@@ -117,8 +119,6 @@ class Starter implements StarterInterface
         }
 
         $this->objectSetupArgs = null;
-
-        StarterPool::getInstance()->addStarter($this);
     }
 
     public function addClassFinder(ClassFinderInterface $classFinder)
