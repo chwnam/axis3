@@ -51,7 +51,7 @@ function datetimeI18n($datetime = 'now', $field = 'both', $glue = ' ')
                 break;
         }
 
-        return date_i18n($format, $datetime->getTimestamp());
+        return date_i18n($format, $datetime->getTimestamp() + $datetime->getOffset());
     }
 
     return '';
