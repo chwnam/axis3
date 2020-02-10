@@ -3,8 +3,8 @@
 namespace Shoplic\Axis3\Models\ValueTypes;
 
 use DateTime;
-use DateTimeInterface;
 use DateTimeZone;
+
 use function Shoplic\Axis3\Functions\datetimeI18n;
 use function Shoplic\Axis3\Functions\getDatetime;
 use function Shoplic\Axis3\Functions\getTimezone;
@@ -24,7 +24,7 @@ class DatetimeType extends BaseValueType
         parent::__construct($args);
 
         if (!$this->args['dateFormat']) {
-            $this->args['dateFormat'] = DateTimeInterface::ATOM;
+            $this->args['dateFormat'] = DATE_ATOM;
         }
 
         if ($this->args['default']) {
