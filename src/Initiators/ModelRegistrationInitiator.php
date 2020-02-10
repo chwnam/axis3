@@ -3,11 +3,10 @@
 namespace Shoplic\Axis3\Initiators;
 
 use Shoplic\Axis3\Interfaces\Models\CustomPostModelInterface;
-use Shoplic\Axis3\Interfaces\Models\FieldHolders\MetaFieldHolderInterface;
-use Shoplic\Axis3\Interfaces\Models\FieldHolders\OptionFieldHolderInterface;
-use Shoplic\Axis3\Interfaces\Models\FieldModels\OptionFieldModelInterface;
+use Shoplic\Axis3\Interfaces\Models\RolesCapsInterface;
 use Shoplic\Axis3\Interfaces\Models\SettingsModelInterface;
 use Shoplic\Axis3\Interfaces\Models\TaxonomyInterface;
+
 use function Shoplic\Axis3\Functions\requestFlushRewrite;
 
 /**
@@ -73,11 +72,45 @@ class ModelRegistrationInitiator extends BaseInitiator
     public function activationSetup()
     {
         $this->registerObjects();
+        foreach ($this->getModelClasses() as $modelClasses) {
+            foreach ($modelClasses as $modelClass) {
+                $implemented = class_implements($modelClass);
+                if (
+                    isset($implemented[CustomPostModelInterface::class]) ||
+                    isset($implemented[TaxonomyInterface::class]) ||
+                    isset($implemented[RolesCapsInterface::class])
+                ) {
+                    /** @var CustomPostModelInterface|TaxonomyInterface $instance */
+                    $instance = $this->claimModel($modelClass);
+                    $instance->activationSetup();
+                }
+            }
+        }
         requestFlushRewrite();
     }
 
     public function deactivationCleanup()
     {
+        foreach ($this->getModelClasses() as $modelClasses) {
+            foreach ($modelClasses as $modelClass) {
+                $implemented = class_implements($modelClass);
+                if (isset($implemented[CustomPostModelInterface::class])) {
+                    /** @var CustomPostModelInterface $instance */
+                    $instance = $this->claimModel($modelClass);
+                    $instance->deactivationCleanup();
+                    unregister_post_type($instance->getPostType());
+                } elseif (isset($implemented[TaxonomyInterface::class])) {
+                    /** @var TaxonomyInterface $instance */
+                    $instance = $this->claimModel($modelClass);
+                    $instance->deactivationCleanup();
+                    unregister_taxonomy($instance->getTaxonomy());
+                } elseif (isset($implemented[RolesCapsInterface::class])) {
+                    /** @var RolesCapsInterface $instance */
+                    $instance = $this->claimModel($modelClass);
+                    $instance->deactivationCleanup();
+                }
+            }
+        }
         requestFlushRewrite();
     }
 }
