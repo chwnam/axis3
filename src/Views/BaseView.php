@@ -5,6 +5,7 @@ namespace Shoplic\Axis3\Views;
 use Parsedown;
 use Shoplic\Axis3\Interfaces\Views\ViewInterface;
 use Shoplic\Axis3\Objects\AxisObject;
+
 use function Shoplic\Axis3\Functions\closeTag;
 use function Shoplic\Axis3\Functions\openTag;
 use function Shoplic\Axis3\Functions\toPascalCase;
@@ -170,16 +171,16 @@ class BaseView extends AxisObject implements ViewInterface
 
             if (is_string($keyword) && !empty($keyword)) {
                 $key    = $keyword;
-                $method = [$this, 'getContext' . ucfirst(toPascalCase($keyword))];
+                $method = [$this, 'getContext' . toPascalCase($key)];
                 $params = &$commonParams;
             } elseif (is_array($keyword) && !empty($keyword)) {
                 $key    = array_shift($keyword);
-                $method = [$this, 'getContext' . ucfirst(toPascalCase($keyword))];
+                $method = [$this, 'getContext' . toPascalCase($key)];
                 $params = array_merge($commonParams, $keyword);
             }
 
             if ($method && $key && is_callable($method)) {
-                $context[$key] = call_user_func($method, $params);
+                $context[$key] = call_user_func_array($method, $params);
             }
         }
 
