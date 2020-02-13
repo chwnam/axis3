@@ -35,6 +35,22 @@ function adminEnqueueScripts()
     );
 
     wp_register_script(
+        'axis3-timepicker-addon',
+        $assetUrlBase . '/js/jquery-ui-timepicker-addon.min.js',
+        ['axis3-datepicker-widget'],
+        '1.6.3',
+        true
+    );
+
+    wp_register_script(
+        'axis3-timepicker-addon-i18n',
+        $assetUrlBase . '/js/jquery-ui-timepicker-addon-i18n.min.js',
+        ['axis3-timepicker-addon'],
+        '1.6.3',
+        true
+    );
+
+    wp_register_script(
         'axis3-google-map',
         $assetUrlBase . '/js/admin/field-widgets/google-map.js',
         ['jquery', 'wp-util', 'axis3-google-map-api'],
@@ -99,5 +115,12 @@ function adminEnqueueScripts()
         $assetUrlBase . '/css/prism.css',
         [],
         '1.17.1'
+    );
+
+    wp_register_style(
+        'axis3-timepicker-addon',
+        $assetUrlBase . '/css/jquery-ui-timepicker-addon.min.css',
+        ['axis3-jquery-ui'],
+        '1.6.3'
     );
 }
