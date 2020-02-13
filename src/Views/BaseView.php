@@ -254,12 +254,12 @@ class BaseView extends AxisObject implements ViewInterface
             $registeredHere = false;
         }
 
-        if (!wp_script_is($handle, 'enqueued')) {
+        if (!wp_style_is($handle, 'enqueued')) {
             if ($finishEnqueue) {
                 if ($registeredHere) {
-                    wp_enqueue_style($handle);
-                } else {
                     wp_enqueue_style($handle, $this->getCssUrl($relPath, $internal), $deps, $version, $media);
+                } else {
+                    wp_enqueue_style($handle);
                 }
             }
             if (!empty($inline)) {
