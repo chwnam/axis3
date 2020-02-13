@@ -7,9 +7,11 @@ span.axis3-widget-tooltip {
     float: right;
 }
 
-span.axis3-widget-required:after {
-    content: '*';
+span.axis3-widget-required {
     color: rgb(255, 0, 0);
+    font-style: italic;
+    vertical-align: super;
+    font-size: smaller;
 }
 
 .axis3-field-widget.hidden {
@@ -21,7 +23,7 @@ span.axis3-widget-required:after {
 }
 
 .text.axis3-datepicker-widget {
-    width: 160px;
+    width: 200px;
 }
 
 .axis3-field-widget.axis3-google-map-widget .address-field-label,
