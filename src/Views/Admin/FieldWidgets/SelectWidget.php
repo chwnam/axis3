@@ -3,6 +3,7 @@
 namespace Shoplic\Axis3\Views\Admin\FieldWidgets;
 
 use Shoplic\Axis3\Models\ValueTypes\TextType;
+
 use function Shoplic\Axis3\Functions\selectTag;
 
 class SelectWidget extends BaseFieldWidget
@@ -34,8 +35,6 @@ class SelectWidget extends BaseFieldWidget
             $this->args['optionAttrs'],
             $this->args['headingOption']
         );
-
-        // TODO: augmentation
     }
 
     public static function getDefaultArgs(): array
@@ -81,16 +80,6 @@ class SelectWidget extends BaseFieldWidget
                  * @see selectTag()
                  */
                 'headingOption' => false,
-
-                /**
-                 * string: 미관, 혹은 기능상 더 나은 select 위젯을 출력하도록 할 수 있다.
-                 *         기본은 plain 이며 가능한 값은 다음과 같다.
-                 *         - plain:       기본적인 셀렉트 박스.
-                 *         - jquery:      jquery selectmenu 사용
-                 *         - nice-select: nice-select 를 사용한다.
-                 *         - select2:     select2 를 사용한다.
-                 */
-                'augmentation'  => 'plain',
             ]
         );
     }
