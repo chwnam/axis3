@@ -4,6 +4,7 @@ namespace Shoplic\Axis3\Models\FieldModels;
 
 use Shoplic\Axis3\Interfaces\Models\FieldModels\FieldModelInterface;
 use Shoplic\Axis3\Interfaces\Models\ValueTypes\ValueTypeInterface;
+use Shoplic\Axis3\Interfaces\Starters\StarterInterface;
 use Shoplic\Axis3\Models\BaseModel;
 use Shoplic\Axis3\Models\ValueTypes\DatetimeType;
 use Shoplic\Axis3\Models\ValueTypes\ValueObjectType;
@@ -36,6 +37,10 @@ abstract class BaseFieldModel extends BaseModel implements FieldModelInterface
         if (is_null($this->args['updateCache'])) {
             $valueType                 = $this->getValueType();
             $this->args['updateCache'] = ($valueType instanceof ValueObjectType) || ($valueType instanceof DatetimeType);
+        }
+
+        if (isset($this->args['starter']) && $this->args['starter'] instanceof StarterInterface) {
+            $this->setStarter($this->args['starter']);
         }
 
         if (!did_action('plugins_loaded')) {
@@ -251,7 +256,13 @@ abstract class BaseFieldModel extends BaseModel implements FieldModelInterface
              *
              * @see BaseValueType::getDefault()
              */
-            // default => null
+            // default => null,
+
+            /**
+             * StarterInterface 스타터를 지정할 수 있습니다.
+             *                  StubFieldModel 등 임의로 필드를 만드는 경우 사용됩니다.
+             */
+            // starter => null,
         ];
     }
 
