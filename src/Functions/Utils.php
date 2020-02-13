@@ -304,3 +304,47 @@ function humanReadableSize(int $size, int $decimal = 1, int $base = 1000): array
         $units[$idx],
     ];
 }
+
+
+/**
+ * 배열을 두 부분으로 자른다. 잘려진 세 부분은 아래와 같다.
+ * - $key 를 기준으로 $key 전의 배열.
+ * - $key 부터 $length 나머지 부분
+ *
+ * @param array $input 입력.
+ * @param mixed $key   배열 내 기준 키.
+ *
+ * @return array 두 부분을 나눈 결과. 항상 길이 2인 배열이 리턴된다.
+ *               기준 키는 두 입력 중 인덱스 1에 붙는다.
+ */
+function splitArray(array $input, $key): array
+{
+    $output = [[], []];
+
+    $pos = array_search($key, array_keys($input), true);
+    if (false !== $pos) {
+        $output[0] = array_slice($input, 0, $pos);
+        $output[1] = array_slice($input, $pos);
+    }
+
+    return $output;
+}
+
+
+/**
+ * 키-값 배열의 중간에 다른 배열을 삽입한다.
+ *
+ * @param array $input 입력할 배열.
+ * @param mixed $key   입력 배열에서 찾을 키. 이 키를 기준으로 배열을 나눈다.
+ * @param array $mixin 끼워 넣을 배열.
+ *
+ * @return array 접합된 배열 결과. 끼워넣은 배열 다음에 기준 키가 발견될 것이다.
+ *
+ * @uses \Shoplic\Axis3\Functions\splitArray()
+ */
+function mixinArray(array $input, $key, array $mixin): array
+{
+    list($left, $right) = splitArray($input, $key);
+
+    return array_merge($left, $mixin, $right);
+}
