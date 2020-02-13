@@ -256,7 +256,7 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
     public function getTitle(): string
     {
         return $this->getLabel() .
-            ($this->isRequired() ? '<span class="axis3-widget-required"></span>' : '') .
+            ($this->isRequired() ? ' <span class="axis3-widget-required">[필수]</span>' : '') .
             $this->getTooltip();
     }
 
@@ -466,11 +466,7 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
                         $objectId = $post->ID;
                     }
                 } elseif (MetaFieldModelInterface::OBJECT_TYPE_USER) {
-                    // 오브젝트 타입이 사용자라면 현재 사용자에서 가져올 수 있다.
-                    $user = wp_get_current_user();
-                    if ($user && $user->exists()) {
-                        $objectId = $user->ID;
-                    }
+                    throw new \RuntimeException('OBJECT_TYPE_USER must supply an objectId argument.');
                 }
             }
         }
