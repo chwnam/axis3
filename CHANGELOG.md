@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## ongoing
+2020년 
+- AutoDiscoverClassFinder 의 contextRule 설정 삭제. (e2a1f928)
+
+
 ## 0.0.3
 2020년 02월 14일
 - JQuery UI 아이콘 이미지 추가 (ccc1d38b)
