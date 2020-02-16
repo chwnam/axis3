@@ -9,7 +9,9 @@ if (window.hasOwnProperty('jQuery') && 'function' === typeof window.jQuery) {
                 textTitle: 'Select or upload media',
                 textPreview: 'Preview',
                 textPreviewChooseImage: 'Choose an image',
-                saveField: 'url'
+                saveField: 'url',
+                library: {},
+                params: {}
             }, opt);
 
             text = $('#' + this.attr('id') + '-text', this);
@@ -19,6 +21,8 @@ if (window.hasOwnProperty('jQuery') && 'function' === typeof window.jQuery) {
             button.axis3AttachMedia({
                 textButton: opt.textButton,
                 textTitle: opt.textTitle,
+                library: opt.library,
+                params: opt.params,
                 selectCallback: function (selection) {
                     var item = selection.length ? selection[0] : {};
                     if (item.url.length && item.id) {

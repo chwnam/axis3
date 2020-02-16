@@ -38,10 +38,11 @@ class MediaLibrarySelectorWidget extends BaseFieldWidget
                         'name'     => $this->getName(),
                         'value'    => $value,
                         'type'     => 'text',
-                        'class'    => 'axis3-field-widget axis3-media-library-selector-widget text',
+                        'class'    => 'axis3-field-widget axis3-media-library-selector-widget text axis3-input-3xl',
                         'data-id'  => $dataId,
                         'required' => $this->isRequired(),
                         'title'    => $this->getRequiredMessage(),
+                        'style'    => 'margin: 2px 10px 2px 0;',
                     ]
                 )
             );
@@ -54,6 +55,7 @@ class MediaLibrarySelectorWidget extends BaseFieldWidget
                         'type'  => 'button',
                         'class' => 'axis3-field-widget axis3-media-library-selector-widget button button-secondary',
                         'value' => $this->args['textSelectMedia'],
+                        'style' => 'margin: 2px 0;',
                     ]
                 )
             );
@@ -82,6 +84,8 @@ class MediaLibrarySelectorWidget extends BaseFieldWidget
             'textTitle'              => $this->args['textTitle'],
             'textPreview'            => $this->args['textPreview'],
             'textPreviewChooseImage' => $this->args['textPreviewChooseImage'],
+            'library'                => $this->args['library'],
+            'params'                 => $this->args['params'],
             'saveField'              => 'url',
         ];
 
@@ -129,6 +133,24 @@ class MediaLibrarySelectorWidget extends BaseFieldWidget
 
                 // string: 텍스트. 미리보기 <a> 태그 텍스트. 선택된 이미지 없을 때.
                 'textPreviewChooseImage' => __('Choose an image', 'axis3'),
+
+                /**
+                 * array: media library 쿼리로 사용됨.
+                 *
+                 * 사용할 수 있는 필터는 제한되며, 더 확장을 원하는 경우라면 PHP 쪽에서
+                 * add_filter() 로 접근해야 한다.
+                 *
+                 * @see: wp_ajax_query_attachments()
+                 */
+                'library'                => [],
+
+                /**
+                 * array: async-upload.php 로 파일 업로드시 변수를 추가.
+                 *
+                 * @see wp-includes/js/media-views.js
+                 * @see wp.media.view.UploaderWindow.ready()
+                 */
+                'params'                 => [],
 
                 // string: 'id', 'url', 중 택일.
                 'saveField'              => 'url',

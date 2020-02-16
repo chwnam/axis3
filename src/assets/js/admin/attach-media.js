@@ -10,7 +10,8 @@ if (window.hasOwnProperty('jQuery') && 'function' === typeof window.jQuery) {
                     console.log(selection);
                 },
                 textButton: 'Use this media',
-                textTitle: 'Select or Upload Media'
+                textTitle: 'Select or Upload Media',
+                params: {} // put additional variables when submit.
             }, opt);
 
             this.on('click', function (e) {
@@ -27,6 +28,11 @@ if (window.hasOwnProperty('jQuery') && 'function' === typeof window.jQuery) {
                         multiple: opt.multiple,
                         library: opt.library
                     });
+                    if (opt.params) {
+                        $.each(opt.params, function (key, val) {
+                            frame.uploader.options.uploader.params[key] = val;
+                        });
+                    }
                     frame.on('select', function () {
                         opt.selectCallback($.map(frame.state().get('selection').models, function (obj) {
                             return obj.toJSON();
