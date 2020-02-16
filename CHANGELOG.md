@@ -1,8 +1,11 @@
 # CHANGELOG
 
-## ongoing
-2020년 
+## 0.0.4
+2020년 02월 16일
+- ScriptRegistrationInitiator 추가. (ba2fcd6c)
+- MediaLibrarySelectorWidget, 새 파라미터 'library', 'params' 지원. (502f928d)
 - AutoDiscoverClassFinder 의 contextRule 설정 삭제. (e2a1f928)
+- 자잘한 수정 (9e3de97e, 051f6523) 
 
 
 ## 0.0.3
