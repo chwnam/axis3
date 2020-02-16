@@ -43,7 +43,17 @@ class ArrayType extends BaseValueType
         }
 
         if ($this->args['associative']) {
-            return array_combine(array_map($this->args['keySanitizer'], array_keys($values)), $sanitizedValues);
+            $keys = array_map($this->args['keySanitizer'], array_keys($values));
+            if (is_array($this->args['keys']) && !empty($this->args['keys'])) {
+                $availKeys = $this->args['keys'];
+                $keys      = array_filter(
+                    $this->args['keys'],
+                    function ($key) use (&$availKeys) {
+                        return isset($availKeys[$key]);
+                    }
+                );
+            }
+            return array_combine($keys, $sanitizedValues);
         } else {
             return $sanitizedValues;
         }
@@ -64,7 +74,9 @@ class ArrayType extends BaseValueType
                         break;
 
                     case 'default':
-                        $verified[$key] = $this->elementValueType->getDefault(ValueTypeInterface::DEFAULT_CONTEXT_VERIFY);
+                        $verified[$key] = $this->elementValueType->getDefault(
+                            ValueTypeInterface::DEFAULT_CONTEXT_VERIFY
+                        );
                         break;
 
                     case 'error':
@@ -72,7 +84,8 @@ class ArrayType extends BaseValueType
                             false,
                             sprintf(
                                 __('The array element index \'%s\' occurred an error. Error message: %s', 'axis3'),
-                                $key, $result
+                                $key,
+                                $result
                             ),
                         ];
                 }
@@ -130,6 +143,10 @@ class ArrayType extends BaseValueType
                 // callable: 연관 배열이라면 키를 세정하는 함수를 반드시 설정해야 한다.
                 //           만약 associative 가 true 일 때, null 이라면 'sanitize_key'로 설정될 것이다.
                 'keySanitizer'         => null,
+
+                // array: 'associative'가 true 이면 지정할 수 있다. 입력하는 키를 제한할 수 있다.
+                //        연관 배열로서, 키는 제한할 키. 값은 키에 대한 설명이다.
+                'keys'                 => null,
 
                 // string: 요소에 대해 세정, 검증을 통과하지 못하는 요소를 어떻게 처리할지 결정한다.
                 //         다음 값 중 하나를 선택할 수 있다.
