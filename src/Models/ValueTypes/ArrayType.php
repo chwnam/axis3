@@ -35,28 +35,22 @@ class ArrayType extends BaseValueType
 
     public function sanitize($values)
     {
-        $values          = (array)$values;
-        $sanitizedValues = [];
+        $sanitized = [];
 
         foreach ((array)$values as $key => $value) {
-            $sanitizedValues[] = $this->elementValueType->sanitize($value);
+            if ($this->args['associative']) {
+                $k = call_user_func($this->args['keySanitizer'], $key);
+                if ($this->args['keys'] && !isset($this->args['keys'][$k])) {
+                    continue;
+                } else {
+                    $sanitized[$k] = $this->elementValueType->sanitize($value);
+                }
+            } else {
+                $sanitized[] = $this->elementValueType->sanitize($value);
+            }
         }
 
-        if ($this->args['associative']) {
-            $keys = array_map($this->args['keySanitizer'], array_keys($values));
-            if (is_array($this->args['keys']) && !empty($this->args['keys'])) {
-                $availKeys = $this->args['keys'];
-                $keys      = array_filter(
-                    $this->args['keys'],
-                    function ($key) use (&$availKeys) {
-                        return isset($availKeys[$key]);
-                    }
-                );
-            }
-            return array_combine($keys, $sanitizedValues);
-        } else {
-            return $sanitizedValues;
-        }
+        return $sanitized;
     }
 
     public function verify($values): array
