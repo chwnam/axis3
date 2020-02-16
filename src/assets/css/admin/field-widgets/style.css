@@ -60,6 +60,14 @@ span.axis3-widget-required {
     margin-right: 0;
 }
 
+.axis3-input-2xl {
+    width: 446px;
+}
+
+.axis3-input-3xl {
+    width: 669px;
+}
+
 @media screen and  (max-width: 782px) {
     .text.axis3-datepicker-widget {
         width: 180px !important;
