@@ -22,19 +22,28 @@ class SimpleInitiator extends BaseInitiator
     {
         $this->contextHandlerGeneric();
 
-        $methodName = 'contextHandler' . ucfirst($this->getStarter()->getCurrentRequestContext());
-        if (method_exists($this, $methodName)) {
-            /**
-             * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerAdmin()
-             * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerAjax()
-             * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerAutosave()
-             * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerCron()
-             * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerFront()
-             * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerFrontNoAjax()
-             *
-             * 추가적으로 콘텍스트를 등록했는가? contextHandler{$context} 메소드를 만들면 된다.
-             */
-            call_user_func([$this, $methodName]);
+        $context = $this->getStarter()->getCurrentRequestContext();
+        if ('Front' === $context && (defined('DOING_AJAX') && DOING_AJAX)) {
+            $contexts = ['Front', 'Ajax'];
+        } else {
+            $contexts = [$context];
+        }
+
+        foreach ($contexts as $context) {
+            $methodName = 'contextHandler' . ucfirst($context);
+            if (method_exists($this, $methodName)) {
+                /**
+                 * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerAdmin()
+                 * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerAjax()
+                 * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerAutosave()
+                 * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerCron()
+                 * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerFront()
+                 * @uses \Shoplic\Axis3\Initiators\SimpleInitiator::contextHandlerFrontNoAjax()
+                 *
+                 * 추가적으로 콘텍스트를 등록했는가? contextHandler{$context} 메소드를 만들면 된다.
+                 */
+                call_user_func([$this, $methodName]);
+            }
         }
     }
 
