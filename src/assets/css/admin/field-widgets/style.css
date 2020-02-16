@@ -60,6 +60,18 @@ span.axis3-widget-required {
     margin-right: 0;
 }
 
+.axis3-input-quarter-width {
+    width: 56px;
+}
+
+.axis3-input-one-third-width {
+    width: 74px;
+}
+
+.axis3-input-half-width {
+    width: 112px;
+}
+
 .axis3-input-2xl {
     width: 446px;
 }
