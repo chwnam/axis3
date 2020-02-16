@@ -248,6 +248,19 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
 
         if ($value instanceof ValueObjectInterface) {
             $value = $value->{$this->args['getterMethod']}();
+        } elseif (is_array($value) && $this->args['keyPostfix']) {
+            $postfix  = array_reverse($this->args['keyPostfix']);
+            $innerVal = $value;
+            while ($postfix) {
+                $k = array_pop($postfix);
+                if (isset($innerVal[$k])) {
+                    $innerVal = $innerVal[$k];
+                } else {
+                    $innerVal = false;
+                    break;
+                }
+            }
+            $value = $innerVal;
         }
 
         return $value;
