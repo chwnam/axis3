@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.0.5
+2020년 02월 17일
+- FieldWidget keyPostFix 인자 지원. (07d6db66)
+- ArrayType: 'key' 옵션 추가. 이 옵션을 이용하면 입력하는 키의 종류를 제한할 수 있습니다. (76c5a7cc, b8f306c7)
+- 기타 자잘한 수정 (cc489f15, 1cb243ee, b8f306c7)
+
+
 ## 0.0.4
 2020년 02월 16일
 - ScriptRegistrationInitiator 추가. (ba2fcd6c)
