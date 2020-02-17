@@ -172,7 +172,7 @@ class BaseView extends AxisObject implements ViewInterface
             if (is_string($keyword) && !empty($keyword)) {
                 $key    = $keyword;
                 $method = [$this, 'getContext' . toPascalCase($key)];
-                $params = &$commonParams;
+                $params = $commonParams;
             } elseif (is_array($keyword) && !empty($keyword)) {
                 $key    = array_shift($keyword);
                 $method = [$this, 'getContext' . toPascalCase($key)];
