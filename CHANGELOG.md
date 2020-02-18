@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.0.6
+2020년 02월 18일
+- MediaLibraryWidget, saveField 값이 'id'인 경우는 readonly 속성을 부여. (41be2c99)
+- MediaLibraryWidget, 첨부물이 이미지가 아닐 경우 발생하던 에러 수정 (0f389044)
+- MetaFieldModel, single 필드가 아닐 때 저장 로직 구현. (89078d3f)
+- CustomPostAdminInitiator, beforeSave(), afterSave() 메소드 추가. (84575576)
+
+
 ## 0.0.5
 2020년 02월 17일
 - FieldWidget keyPostFix 인자 지원. (07d6db66)
