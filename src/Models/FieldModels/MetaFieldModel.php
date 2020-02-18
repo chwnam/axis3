@@ -104,7 +104,7 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
                 if (false === $cache) {
                     $cache = [];
                 }
-                $cache[$this->getKey()][0]= $value = $this->import($value);
+                $cache[$this->getKey()][0] = $value = $this->import($value);
                 wp_cache_replace($objectId, $cache, $this->getObjectType() . '_meta');
             }
         } else {
@@ -127,14 +127,35 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
             );
         }
 
-        $result = update_metadata(
-            $this->getObjectType(),
-            $this->checkObjectId($objectId),
-            $this->getKey(),
-            $value
-        );
+        $objectType = $this->getObjectType();
+        $objectId   = $this->checkObjectId($objectId);
+        $metaKey    = $this->getKey();
 
-        return $result;
+        if ($this->isSingle()) {
+            return update_metadata($objectType, $objectId, $metaKey, $value);
+        } elseif (is_array($value)) {
+            $result  = true;
+            $current = get_metadata($objectType, $objectId, $metaKey, false);
+
+            if ($this->isOrdered()) {
+                delete_metadata($objectType, $objectId, $metaKey);
+                foreach ($value as $item) {
+                    $result &= add_metadata($objectType, $objectId, $metaKey, $item);
+                }
+            } else {
+                $toDelete = array_diff($current, $value);
+                $toAdd    = array_diff($value, $current);
+                foreach ($toDelete as $item) {
+                    $result &= delete_metadata($objectType, $objectId, $metaKey, $item);
+                }
+                foreach ($toAdd as $item) {
+                    $result &= add_metadata($objectType, $objectId, $metaKey, $item);
+                }
+            }
+            return $result;
+        } else {
+            return false;
+        }
     }
 
     public function saveFromRequest($objectId, &$request, $whenKeyNotFound = null)
