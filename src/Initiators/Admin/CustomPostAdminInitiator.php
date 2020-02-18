@@ -6,6 +6,7 @@ use Shoplic\Axis3\Initiators\AutoHookInitiator;
 use Shoplic\Axis3\Interfaces\Models\CustomPostModelInterface;
 use Shoplic\Axis3\Views\Admin\MetaBoxView;
 use WP_Post;
+use WP_Query;
 use WP_Screen;
 
 use function Shoplic\Axis3\Functions\callbackFreeTask;
@@ -273,6 +274,8 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
                 }
             }
 
+            $this->beforeSavePost($post);
+
             callbackFreeTask(
                 "save_post_{$this->getModel()->getPostType()}",
                 [$this, 'actionSavePost'],
@@ -285,6 +288,8 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
             );
 
             set_transient('axis3_post_' . $post->post_type . '_update_warnings', get_settings_errors(), 30);
+
+            $this->afterSavePost($post);
         }
     }
 
@@ -355,9 +360,27 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
      * @callback
      * @action      pre_get_posts
      *
-     * @param \WP_Query $query
+     * @param WP_Query $query
      */
-    public function actionPreGetPosts(\WP_Query $query)
+    public function actionPreGetPosts(WP_Query $query)
+    {
+    }
+
+    /**
+     * 저장 후 불리는 메소드. 오버라이드하여 사용할 수 있다.
+     *
+     * @param WP_Post $post 저장된 포스트.
+     */
+    protected function afterSavePost(WP_Post $post)
+    {
+    }
+
+    /**
+     * 저장 전 불리는 메소드. 오버라이드하여 사용할 수 있다.
+     *
+     * @param WP_Post $post 저장된 포스트.
+     */
+    protected function beforeSavePost(WP_Post $post)
     {
     }
 }
