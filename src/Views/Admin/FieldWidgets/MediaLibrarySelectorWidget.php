@@ -20,14 +20,18 @@ class MediaLibrarySelectorWidget extends BaseFieldWidget
 
         {
             if ($this->args['saveField'] == 'url') {
+                $dataId = '';
                 $value  = $this->getValue();
-                $dataId = '';
             } elseif ($this->args['saveField'] == 'id') {
-                $value  = wp_get_attachment_image_url($this->getValue());
                 $dataId = $this->getValue();
+                if (wp_attachment_is_image($dataId)) {
+                    $value = wp_get_attachment_image_url($this->getValue());
+                } else {
+                    $value = wp_get_attachment_url($dataId);
+                }
             } else {
-                $value  = '';
                 $dataId = '';
+                $value  = '';
             }
 
             inputTag(
@@ -38,7 +42,7 @@ class MediaLibrarySelectorWidget extends BaseFieldWidget
                         'name'     => $this->getName(),
                         'value'    => $value,
                         'type'     => 'text',
-                        'class'    => 'axis3-field-widget axis3-media-library-selector-widget text axis3-input-3xl',
+                        'class'    => 'axis3-field-widget axis3-media-library-selector-widget text',
                         'data-id'  => $dataId,
                         'required' => $this->isRequired(),
                         'title'    => $this->getRequiredMessage(),
@@ -86,7 +90,7 @@ class MediaLibrarySelectorWidget extends BaseFieldWidget
             'textPreviewChooseImage' => $this->args['textPreviewChooseImage'],
             'library'                => $this->args['library'],
             'params'                 => $this->args['params'],
-            'saveField'              => 'url',
+            'saveField'              => $this->args['saveField'],
         ];
 
         wp_add_inline_script(
