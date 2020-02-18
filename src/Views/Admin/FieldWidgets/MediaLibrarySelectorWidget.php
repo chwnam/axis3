@@ -45,6 +45,7 @@ class MediaLibrarySelectorWidget extends BaseFieldWidget
                         'class'    => 'axis3-field-widget axis3-media-library-selector-widget text',
                         'data-id'  => $dataId,
                         'required' => $this->isRequired(),
+                        'readonly' => 'id' === $this->args['saveField'],
                         'title'    => $this->getRequiredMessage(),
                         'style'    => 'margin: 2px 10px 2px 0;',
                     ]
