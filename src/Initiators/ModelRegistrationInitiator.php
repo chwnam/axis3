@@ -3,6 +3,7 @@
 namespace Shoplic\Axis3\Initiators;
 
 use Shoplic\Axis3\Interfaces\Models\CustomPostModelInterface;
+use Shoplic\Axis3\Interfaces\Models\ModelInterface;
 use Shoplic\Axis3\Interfaces\Models\RolesCapsInterface;
 use Shoplic\Axis3\Interfaces\Models\SettingsModelInterface;
 use Shoplic\Axis3\Interfaces\Models\TaxonomyInterface;
@@ -78,9 +79,10 @@ class ModelRegistrationInitiator extends BaseInitiator
                 if (
                     isset($implemented[CustomPostModelInterface::class]) ||
                     isset($implemented[TaxonomyInterface::class]) ||
-                    isset($implemented[RolesCapsInterface::class])
+                    isset($implemented[RolesCapsInterface::class]) ||
+                    method_exists($modelClass, 'activationSetup')
                 ) {
-                    /** @var CustomPostModelInterface|TaxonomyInterface $instance */
+                    /** @var CustomPostModelInterface|TaxonomyInterface|RolesCapsInterface|ModelInterface $instance */
                     $instance = $this->claimModel($modelClass);
                     $instance->activationSetup();
                 }
@@ -106,6 +108,10 @@ class ModelRegistrationInitiator extends BaseInitiator
                     unregister_taxonomy($instance->getTaxonomy());
                 } elseif (isset($implemented[RolesCapsInterface::class])) {
                     /** @var RolesCapsInterface $instance */
+                    $instance = $this->claimModel($modelClass);
+                    $instance->deactivationCleanup();
+                } elseif (method_exists($modelClass, 'deactivationCleanup')) {
+                    /** @var ModelInterface $instance */
                     $instance = $this->claimModel($modelClass);
                     $instance->deactivationCleanup();
                 }
