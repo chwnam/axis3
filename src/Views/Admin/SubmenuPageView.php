@@ -10,16 +10,16 @@ namespace Shoplic\Axis3\Views\Admin;
  */
 abstract class SubmenuPageView extends MenuPageView
 {
-    abstract public function getParentSlug();
+    abstract public static function getParentSlug();
 
     public function addSubMenuPage()
     {
         $this->hook = add_submenu_page(
-            $this->getParentSlug(),
-            $this->getPageTitle(),
-            $this->getMenuTitle(),
-            $this->getCapability(),
-            $this->getMenuSlug(),
+            static::getParentSlug(),
+            static::getPageTitle(),
+            static::getMenuTitle(),
+            static::getCapability(),
+            static::getMenuSlug(),
             $this->getCallback()
         );
     }

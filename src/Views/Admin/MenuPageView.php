@@ -17,13 +17,13 @@ abstract class MenuPageView extends BaseView
     /** @var string */
     protected $hook = '';
 
-    abstract public function getPageTitle(): string;
+    abstract public static function getPageTitle(): string;
 
-    abstract public function getMenuTitle(): string;
+    abstract public static function getMenuTitle(): string;
 
-    abstract public function getCapability(): string;
+    abstract public static function getCapability(): string;
 
-    abstract public function getMenuSlug(): string;
+    abstract public static function getMenuSlug(): string;
 
     abstract public function dispatch();
 
@@ -50,10 +50,10 @@ abstract class MenuPageView extends BaseView
     public function addMenuPage()
     {
         $this->hook = add_menu_page(
-            $this->getPageTitle(),
-            $this->getMenuTitle(),
-            $this->getCapability(),
-            $this->getMenuSlug(),
+            static::getPageTitle(),
+            static::getMenuTitle(),
+            static::getCapability(),
+            static::getMenuSlug(),
             $this->getCallback(),
             $this->getIconUrl(),
             $this->getPosition()
