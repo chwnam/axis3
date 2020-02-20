@@ -1,6 +1,7 @@
 # CHANGELOG
 
 ## 0.0.7
+2020년 02월 20일
 - 구조 변경. 아래 MenuPageView, SubMenuPageView 의 메소드는 스태틱 메소드화 되었습니다. (f636ac6f)
   - getPageTitle()
   - getMenuTitle()
