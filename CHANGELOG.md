@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.0.7
+- 구조 변경. 아래 MenuPageView, SubMenuPageView 의 메소드는 스태틱 메소드화 되었습니다. (f636ac6f)
+  - getPageTitle()
+  - getMenuTitle()
+  - getCapability()
+  - getMenuSlug()
+  - getParentSlug()
+  - 해당 메소드는 나타낼 메뉴 페이지를 대표하는 성격을 가졌습니다. 해당 처리를 통해 메뉴의 정보를 좀더 편리하게 참조할 수 있습니다.
+- 모델 클래스가 'activationSetup', 'deactivationCleanup' 메소드를 가지고 있으면 각각 활성화, 비활성화때 호출되도록 수정. (d2f493f5) 
+
+
 ## 0.0.6
 2020년 02월 18일
 - MediaLibraryWidget, saveField 값이 'id'인 경우는 readonly 속성을 부여. (41be2c99)
