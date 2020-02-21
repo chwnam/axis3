@@ -94,7 +94,7 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
      *
      * @param WP_Screen $screen
      */
-    public function action_current_screen(WP_Screen $screen)
+    public function action_current_screen($screen)
     {
         $postType = $this->getModel()->getPostType();
 
