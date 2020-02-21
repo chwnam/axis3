@@ -108,7 +108,15 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
                 wp_cache_replace($objectId, $cache, $this->getObjectType() . '_meta');
             }
         } else {
-            $value = $this->import($value);
+            if ($this->isSingle()) {
+                $value = $this->import($value);
+            } else {
+                $newValue = [];
+                foreach ($value as $v) {
+                    $newValue[] = $this->import($v);
+                }
+                $value = $newValue;
+            }
         }
 
         return $value;
