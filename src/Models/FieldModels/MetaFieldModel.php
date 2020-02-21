@@ -112,7 +112,7 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
                 $value = $this->import($value);
             } else {
                 $newValue = [];
-                foreach ($value as $v) {
+                foreach ((array)$value as $v) {
                     $newValue[] = $this->import($v);
                 }
                 $value = $newValue;
