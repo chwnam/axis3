@@ -311,20 +311,27 @@ function humanReadableSize(int $size, int $decimal = 1, int $base = 1000): array
  * - $key 를 기준으로 $key 전의 배열.
  * - $key 부터 $length 나머지 부분
  *
- * @param array $input 입력.
- * @param mixed $key   배열 내 기준 키.
+ * @param array $input        입력.
+ * @param mixed $key          배열 내 기준 키.
+ * @param bool  $keyToLastOne true 를 입력하면 기준 키는 인덱스 1 로 간다.
+ *                            false 를 입력하면 기준 키는 인덱스 0 로 간다.
  *
  * @return array 두 부분을 나눈 결과. 항상 길이 2인 배열이 리턴된다.
  *               기준 키는 두 입력 중 인덱스 1에 붙는다.
  */
-function splitArray(array $input, $key): array
+function splitArray(array $input, $key, $keyToLastOne = true): array
 {
     $output = [[], []];
 
     $pos = array_search($key, array_keys($input), true);
     if (false !== $pos) {
-        $output[0] = array_slice($input, 0, $pos);
-        $output[1] = array_slice($input, $pos);
+        if ($keyToLastOne) {
+            $output[0] = array_slice($input, 0, $pos);
+            $output[1] = array_slice($input, $pos);
+        } else {
+            $output[0] = array_slice($input, 0, $pos + 1);
+            $output[1] = array_slice($input, $pos + 1);
+        }
     }
 
     return $output;
