@@ -22,7 +22,7 @@ class CheckboxRadioWidget extends BaseFieldWidget
         }
 
         $attributes = [];
-        $values     = (array)$this->getValue();
+        $selected   = (array)$this->getValue();
 
         foreach ($choices as $value => $label) {
             $attributes[] = [
@@ -36,7 +36,7 @@ class CheckboxRadioWidget extends BaseFieldWidget
                         'required' => $this->isRequired(),
                         'title'    => $this->isRequired() ? $this->getRequiredMessage() : $label,
                         'value'    => $value,
-                        'checked'  => in_array($value, $values),
+                        'checked'  => in_array($value, $selected),
                     ]
                 ),
                 wp_parse_args(
