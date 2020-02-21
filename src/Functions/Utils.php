@@ -355,3 +355,29 @@ function mixinArray(array $input, $key, array $mixin): array
 
     return array_merge($left, $mixin, $right);
 }
+
+
+/**
+ * 주어진 입력이 배열이면 지정한 인덱스를 리턴한다.
+ *
+ * 배열 중 단 하나의 요소만 끄집어낼 때 유용하다.
+ *
+ * @param mixed|array $maybeArray  입력. Array 에만 동작하며, 아닌 것이 들어요면 null 리턴.
+ * @param int         $index       추출할 인덱스. 기본 0.
+ * @param string|null $elementType 추출한 배열 요쇼의 타입 체크한다. null 이면 체크하지 않는다.
+ *                                 체크했을 때 입력한 타입과 일치하지 않으면 리턴은 null.
+ *
+ * @return mixed|null
+ */
+function fetchElement($maybeArray, $index = 0, $elementType = null)
+{
+    $output = null;
+
+    if (is_array($maybeArray) && $index < count($maybeArray)) {
+        if (is_null($elementType) || $maybeArray[$index] instanceof $elementType) {
+            $output = $maybeArray[$index];
+        }
+    }
+
+    return $output;
+}
