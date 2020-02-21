@@ -371,7 +371,7 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
      *
      * @param WP_Post $post 저장된 포스트.
      */
-    protected function afterSavePost(WP_Post $post)
+    protected function afterSavePost($post)
     {
     }
 
@@ -380,7 +380,7 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
      *
      * @param WP_Post $post 저장된 포스트.
      */
-    protected function beforeSavePost(WP_Post $post)
+    protected function beforeSavePost($post)
     {
     }
 }
