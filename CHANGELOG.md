@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.0.8
+2020년 02월 21일
+- 자잘한 오류 및 기능 수정 
+  - CheckboxRadioWidget 기능 수정. (39da4f55)
+  - fetchElement() 메소드 추가. (19c4c64f)
+  - beforeSave, afterSave 메소드의 파라미터 힌트 제거. (4e171d11)
+  - retrieve() 메소드 single=false 일때 warning 나오는 것 수정. (8ec6688d)
+  - MetaFieldModel::retrieve() 메소드 single=false 경우 수정. (25aee862)
+  - splitArray() 함수 기능 수정. (26d2f64b)
+
+
 ## 0.0.7
 2020년 02월 20일
 - 구조 변경. 아래 MenuPageView, SubMenuPageView 의 메소드는 스태틱 메소드화 되었습니다. (f636ac6f)
