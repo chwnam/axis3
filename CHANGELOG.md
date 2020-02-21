@@ -3,6 +3,7 @@
 ## 0.0.8
 2020년 02월 21일
 - 자잘한 오류 및 기능 수정 
+  - action_current_screen() 메소드 시그니쳐 조정 (98ad2e6b)
   - CheckboxRadioWidget 기능 수정. (39da4f55)
   - fetchElement() 메소드 추가. (19c4c64f)
   - beforeSave, afterSave 메소드의 파라미터 힌트 제거. (4e171d11)
