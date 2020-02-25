@@ -11,7 +11,7 @@ class ClassicEditorWidget extends BaseFieldWidget
 
     private static $dummyName = 'axis3-classic-editor-dummy-name';
 
-    private static $htmlTemplate = false;
+    private $htmlTemplate = '';
 
     public function outputWidgetCore()
     {
@@ -21,7 +21,10 @@ class ClassicEditorWidget extends BaseFieldWidget
             static::$dummyId,
             array_merge($this->args['wpEditor'], ['textarea_name' => static::$dummyName])
         );
-        static::$htmlTemplate = trim(str_replace(
+        $editorHtml = ob_get_clean();
+
+        $this->htmlTemplate = trim(
+            str_replace(
                 [
                     static::$dummyId,
                     static::$dummyName,
@@ -30,7 +33,8 @@ class ClassicEditorWidget extends BaseFieldWidget
                     '{{ data.editorId }}',
                     '{{ data.editorName }}',
                 ],
-                ob_get_clean())
+                $editorHtml
+            )
         );
 
         echo openTag(
@@ -44,22 +48,11 @@ class ClassicEditorWidget extends BaseFieldWidget
             )
         );
         echo closeTag('div');
-    }
-
-    public function onceBeforeRender()
-    {
-        if (!wp_script_is('wp-util')) {
-            wp_enqueue_script('wp-util');
-        }
 
         $varObj = 'axis3ClassicEditorWidget_' . str_replace('-', '_', $this->getId());
 
-        $this->enqueueScript(
+        wp_localize_script(
             'axis3-classic-editor-widget',
-            'admin/field-widgets/classic-editor.js',
-            ['jquery', 'wp-util'],
-            $this->getStarter()->getVersion(),
-            true,
             $varObj,
             [
                 'dummyId'    => static::$dummyId,
@@ -67,13 +60,12 @@ class ClassicEditorWidget extends BaseFieldWidget
                 'editorName' => $this->getName(),
                 'content'    => $this->getValue(),
                 'target'     => '#axis3-classic-editor-' . $this->getId(),
-            ],
-            "(function ($) {
-                $(document).ready(function ($) {
-                    var obj = {$varObj};
-                    axis3ClassicEditor(obj); 
-                });
-            })(jQuery);"
+            ]
+        );
+
+        wp_add_inline_script(
+            'axis3-classic-editor-widget',
+            "jQuery(function ($) {axis3ClassicEditor(window.{$varObj});});"
         );
 
         if (is_admin()) {
@@ -83,10 +75,26 @@ class ClassicEditorWidget extends BaseFieldWidget
         }
     }
 
+    public function onceBeforeRender()
+    {
+        if (!wp_script_is('wp-util')) {
+            wp_enqueue_script('wp-util');
+        }
+
+        $this->enqueueScript(
+            'axis3-classic-editor-widget',
+            'admin/field-widgets/classic-editor.js',
+            ['jquery', 'wp-util'],
+            $this->getStarter()->getVersion(),
+            true
+        );
+    }
+
     public function outputHtmlTemplate()
     {
-        echo "\n<script type='text/template' id='tmpl-axis3-classic-editor-widget'>\n";
-        echo static::$htmlTemplate;
+        $id = esc_attr('tmpl-axis3-classic-editor-widget-' . $this->getId());
+        echo "\n<script type='text/template' id='{$id}'>\n";
+        echo $this->htmlTemplate;
         echo "\n</script>";
     }
 

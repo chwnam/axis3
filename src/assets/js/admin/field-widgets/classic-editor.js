@@ -1,8 +1,8 @@
 if (window.hasOwnProperty('jQuery') && 'function' === typeof window.jQuery) {
     (function ($) {
-        var template;
-
         window.axis3ClassicEditor = function (obj) {
+            var template;
+
             if (_ && tinymce && tinyMCEPreInit) {
                 var init, qtInit;
 
@@ -11,10 +11,12 @@ if (window.hasOwnProperty('jQuery') && 'function' === typeof window.jQuery) {
                     editorId: '',
                     editorName: '',
                     content: '',
-                    target: '',
+                    target: ''
                 }, obj);
                 init = _.clone(tinyMCEPreInit.mceInit[obj.dummyId]);
                 qtInit = _.clone(tinyMCEPreInit.qtInit[obj.dummyId]);
+                template = wp.template('axis3-classic-editor-widget-' + obj.editorId);
+                console.log('id', 'axis3-classic-editor-widget-' + obj.editorId);
 
                 $(obj.target).html(template({
                     editorId: obj.editorId,
@@ -31,10 +33,5 @@ if (window.hasOwnProperty('jQuery') && 'function' === typeof window.jQuery) {
                 }
             }
         };
-
-        if (window.hasOwnProperty('wp') && 'function' === typeof window.wp.template) {
-            template = wp.template('axis3-classic-editor-widget');
-        }
-
     })(window.jQuery);
 }
