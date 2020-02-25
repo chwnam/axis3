@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 0.0.9
+2020년 02월 25일
+- CustomPostAdminInitiator 키워드 지원 추가 (a25472d9)
+  - KEY_ACTION_RESTRICT_MANAGE_POSTS
+  - KEY_FILTER_ENTER_TITLE_HERE
+  - KEY_FILTER_THE_EDITOR_CONTENT
+- 한 화면에서 클래식 에디터 위젯을 여러 번 띄울 수 있도록 수정 (d4652624)
+- RolesCapsModel 기능 수정 (2cb0111f)
+- CustomPostModel::getPrimitiveCapabilities(d7fe3ae2) 메소드 추가
+- humanReadableSize() 함수 제거 (5bf12ab2)
+
+
 ## 0.0.8
 2020년 02월 21일
 - 자잘한 오류 및 기능 수정 
