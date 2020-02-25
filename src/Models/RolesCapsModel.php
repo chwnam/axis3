@@ -57,7 +57,7 @@ abstract class RolesCapsModel extends MetaFieldHolderModel implements RolesCapsI
      */
     public function getCapabilities(): array
     {
-        if ($this->capabilityInitialized) {
+        if (!$this->isCapabilityInitialized()) {
             foreach (get_class_methods($this) as $method) {
                 if (strlen($method) > 6 && substr($method, 0, 6) === 'getCap' && $method !== 'getCapabilities') {
                     $returned = $this->{$method}();
@@ -119,5 +119,10 @@ abstract class RolesCapsModel extends MetaFieldHolderModel implements RolesCapsI
             $this->revokeFrom(['role' => 'administrator']);
         }
         $this->removeRole();
+    }
+
+    protected function isCapabilityInitialized(): bool
+    {
+        return $this->capabilityInitialized;
     }
 }
