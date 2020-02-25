@@ -269,44 +269,6 @@ function getSvgIconUrl(string $path): string
 
 
 /**
- * 사람이 이해하기 쉬운 용량으로 표시한다.
- *
- * @param int $size       입력 용량
- * @param int $decimal    소숫점 자리 수
- * @param int $base       1000 단위로 계산하거나, 1024 단위로 만들 수 있다.
- *                        1000이면 단위는 다음처럼 표기된다.
- *                        B, KB, MB, GB, TB, PB, EB, ZB, YB
- *
- *                        1024이면 단위는 다음처럼 표기된다.
- *                        B, KiB, MiB, GiB, TiB, PiB, EiB, ZiB, YiB
- *
- *                        이 둘이 아닌 것이 입력되면 1000 으로 교정된다.
- *
- * @return array
- */
-function humanReadableSize(int $size, int $decimal = 1, int $base = 1000): array
-{
-    if ($base !== 1000 && $base !== 1024) {
-        $base = 1000;
-    }
-
-    if (1000 === $base) {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    } else {
-        $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-    }
-
-    $log = log($size, $base);
-    $idx = (int)$log;
-
-    return [
-        round($size / pow($base, $idx), $decimal),
-        $units[$idx],
-    ];
-}
-
-
-/**
  * 배열을 두 부분으로 자른다. 잘려진 세 부분은 아래와 같다.
  * - $key 를 기준으로 $key 전의 배열.
  * - $key 부터 $length 나머지 부분
@@ -380,4 +342,47 @@ function fetchElement($maybeArray, $index = 0, $elementType = null)
     }
 
     return $output;
+}
+
+
+/**
+ * 한 번에 많은 권한을 역할에게 지정.
+ *
+ * @param string|array $roles 역할 이름.
+ * @param array        $caps  권한 목록.
+ * @param bool         $grant 부여/박탈 플래그. true 이면 부여, false 면 박탈.
+ */
+function addCapsToRoles($roles, $caps, $grant = true)
+{
+    global $wpdb, $wp_roles;
+
+    if (!$wp_roles) {
+        return;
+    }
+
+    $rolesData = &$wp_roles->roles;
+
+    foreach ((array)$roles as $role) {
+        if (!isset($rolesData[$role]['capabilities'])) {
+            continue;
+        }
+
+        $capabilities = &$rolesData[$role]['capabilities'];
+
+        if ($grant) {
+            foreach (array_unique(array_filter((array)$caps)) as $cap) {
+                if (!isset($capabilities[$cap]) || !$capabilities[$cap]) {
+                    $capabilities[$cap] = true;
+                }
+            }
+        } else {
+            foreach (array_unique(array_filter((array)$caps)) as $cap) {
+                if (isset($capabilities[$cap])) {
+                    unset($capabilities[$cap]);
+                }
+            }
+        }
+    }
+
+    update_option($wpdb->get_blog_prefix(get_current_blog_id()) . 'user_roles', $rolesData);
 }
