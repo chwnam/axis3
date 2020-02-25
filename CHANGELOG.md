@@ -2,6 +2,7 @@
 
 ## 0.0.9
 2020년 02월 25일
+- 함수 arrayKeyFirst(), arrayKeyLast() 추가 (2d9525a8)
 - CustomPostAdminInitiator 키워드 지원 추가 (a25472d9)
   - KEY_ACTION_RESTRICT_MANAGE_POSTS
   - KEY_FILTER_ENTER_TITLE_HERE
