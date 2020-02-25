@@ -3,7 +3,6 @@
 namespace Shoplic\Axis3\Models;
 
 use Shoplic\Axis3\Interfaces\Models\CustomPostModelInterface;
-use Shoplic\Axis3\Interfaces\Models\FieldModels\MetaFieldModelInterface;
 use Shoplic\Axis3\Models\FieldHolders\MetaFieldHolderModel;
 use Shoplic\Axis3\Models\FieldModels\MetaFieldModel;
 
@@ -58,5 +57,30 @@ abstract class CustomPostModel extends MetaFieldHolderModel implements CustomPos
         $args['objectSubtype'] = static::getPostType();
 
         return $args;
+    }
+
+    public function getPrimitiveCapabilities()
+    {
+        $object = get_post_type_object(static::getPostType());
+
+        if ($object) {
+            return array_intersect_key(
+                (array)$object->cap,
+                [
+                    'delete_others_posts'    => '',
+                    'delete_posts'           => '',
+                    'delete_private_posts'   => '',
+                    'delete_published_posts' => '',
+                    'edit_others_posts'      => '',
+                    'edit_posts'             => '',
+                    'edit_private_posts'     => '',
+                    'edit_published_posts'   => '',
+                    'read_private_posts'     => '',
+                    'publish_posts'          => '',
+                ]
+            );
+        }
+
+        return null;
     }
 }
