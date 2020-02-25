@@ -386,3 +386,31 @@ function addCapsToRoles($roles, $caps, $grant = true)
 
     update_option($wpdb->get_blog_prefix(get_current_blog_id()) . 'user_roles', $rolesData);
 }
+
+
+/**
+ * array_key_first() 의 대용품.
+ *
+ * @param array $array
+ *
+ * @return int|string|null
+ */
+function arrayKeyFirst(array &$array)
+{
+    reset($array);
+    return key($array);
+}
+
+
+/**
+ * array_key_last() 의 대용품.
+ *
+ * @param array $array
+ *
+ * @return int|string|null
+ */
+function arrayKeyLast(array &$array)
+{
+    end($array);
+    return key($array);
+}
