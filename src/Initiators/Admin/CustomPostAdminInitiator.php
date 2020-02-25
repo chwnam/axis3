@@ -62,9 +62,14 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
      * 키워드를 추가하고 actionPreGetPosts() 메소드를 오버라이드한다.
      *
      * @var string
-     * @see @see CustomPostAdminInitiator::addMetaBoxView()
+     * @see CustomPostAdminInitiator::addMetaBoxView()
      */
     const KEY_ACTION_PRE_GET_POSTS = 'pre_get_posts';
+
+    /**
+     * 목록 테이블 상단 '필터' 버튼이 나오기 전에 뭔가 더 붙여줄 수 있는 액션을 추가.
+     */
+    const KEY_ACTION_RESTRICT_MANAGE_POSTS = 'restrict_manage_posts';
 
     /**
      * 정렬 가능한 열 확장을 위한 키워드.
@@ -72,9 +77,23 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
      * 원하는대로 정렬하려면 반드시 KEY_ACTION_PRE_GET_POSTS 와 연계해야 할 것이다.
      *
      * @var string
-     * @see @see CustomPostAdminInitiator::filterSortableColumns()
+     * @see CustomPostAdminInitiator::filterSortableColumns()
      */
     const KEY_FILTER_CUSTOM_SORTABLE_COLUMNS = 'sortable_columns';
+
+    /**
+     * 제목란의 플레이스홀더 문구 수정.
+     *
+     * @see wp-admin/edit-form-advanced.php
+     */
+    const KEY_FILTER_ENTER_TITLE_HERE = 'enter_title_here';
+
+    /**
+     * 디폴트 에디터 콘텐트를 수정. 클래식 에디터.
+     *
+     * @see \_WP_Editors::editor()
+     */
+    const KEY_FILTER_THE_EDITOR_CONTENT = 'the_editor_content';
 
     /** @var string[] 미리 정의된 기능의 키워드 */
     private $keywords = [];
@@ -85,6 +104,20 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
     private $settingErrors = [];
 
     abstract public function getModel(): CustomPostModelInterface;
+
+    public function action_admin_init()
+    {
+        $postType = $this->getModel()->getPostType();
+
+        if ($this->isEnabled(self::KEY_ACTION_CUSTOM_COLUMNS)) {
+            add_filter("manage_{$postType}_posts_columns", [$this, 'filterCustomColumns']);
+            add_action("manage_{$postType}_posts_custom_column", [$this, 'actionCustomColumn'], 10, 2);
+        }
+
+        if ($this->isEnabled(self::KEY_ACTION_SAVE_POST)) {
+            add_action("save_post_{$postType}", [$this, 'actionSavePost'], 10, 3);
+        }
+    }
 
     /**
      * 스크린의 포스트 타입을 보고 일치했을 때 필요한 액션/필터를 발동시킨다.
@@ -97,17 +130,8 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
     public function action_current_screen($screen)
     {
         $postType = $this->getModel()->getPostType();
-
         if ($screen->post_type !== $postType) {
             return;
-        }
-
-        if ($this->isEnabled(self::KEY_ACTION_ADD_META_BOXES)) {
-            add_action("add_meta_boxes_{$postType}", [$this, 'actionAddMetaBoxes']);
-        }
-
-        if ($this->isEnabled(self::KEY_ACTION_SAVE_POST)) {
-            add_action("save_post_{$postType}", [$this, 'actionSavePost'], 10, 3);
         }
 
         if ($this->isEnabled(self::KEY_ACTION_PRE_GET_POSTS)) {
@@ -116,22 +140,19 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
 
         if ('edit' === $screen->base) {
             // 포스트 목록 화면
-            if ($this->isEnabled(self::KEY_ACTION_CUSTOM_COLUMNS)) {
-                add_filter(
-                    'manage_' . $screen->post_type . '_posts_columns',
-                    [$this, 'filterCustomColumns']
-                );
-                add_action(
-                    'manage_' . $screen->post_type . '_posts_custom_column',
-                    [$this, 'actionCustomColumn'],
-                    10,
-                    2
-                );
-            }
             if ($this->isEnabled(self::KEY_FILTER_CUSTOM_SORTABLE_COLUMNS)) {
                 add_filter(
                     "manage_{$screen->id}_sortable_columns",
                     [$this, 'filterSortableColumns']
+                );
+            }
+
+            if ($this->isEnabled(self::KEY_ACTION_RESTRICT_MANAGE_POSTS)) {
+                add_action(
+                    'restrict_manage_posts',
+                    [$this, 'actionRestrictManagePosts'],
+                    10,
+                    2
                 );
             }
         } elseif ('post' === $screen->base) {
@@ -144,7 +165,16 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
             }
 
             if ($this->isEnabled(self::KEY_ACTION_ADD_META_BOXES)) {
+                add_action("add_meta_boxes_{$postType}", [$this, 'actionAddMetaBoxes']);
                 add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts'], 100);
+            }
+
+            if ($this->isEnabled(self::KEY_FILTER_ENTER_TITLE_HERE)) {
+                add_filter('enter_title_here', [$this, 'filterEnterTitleHere'], 10, 2);
+            }
+
+            if ($this->isEnabled(self::KEY_FILTER_THE_EDITOR_CONTENT)) {
+                add_filter('the_editor_content', [$this, 'filterTheEditorContent'], 10, 2);
             }
         }
     }
@@ -324,6 +354,16 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
     }
 
     /**
+     * 목록 테이블에 필터 추가.
+     *
+     * @param string $postType 포스트 타입.
+     * @param string $which    위치. top, bottom, bar.
+     */
+    public function actionRestrictManagePosts(string $postType, string $which)
+    {
+    }
+
+    /**
      * 정렬 가능한 칼럼 목록 리턴.
      *
      * @callback
@@ -352,6 +392,40 @@ abstract class CustomPostAdminInitiator extends AutoHookInitiator
     public function filterSortableColumns(array $columns)
     {
         return $columns;
+    }
+
+    /**
+     * 제목 입력란 플레이스홀더 변경 필터 콜백.
+     *
+     * @callback
+     * @filter      enter_title_here
+     *
+     * @param string   $title 제목.
+     * @param \WP_Post $post  포스트.
+     *
+     * @return string
+     * @used-by     action_current_screen()
+     */
+    public function filterEnterTitleHere($title, $post)
+    {
+        return $title;
+    }
+
+    /**
+     * 에디터에 들어가는 초기 내용 필터 콜백.
+     *
+     * @callback
+     * @filter      the_editor_content
+     *
+     * @param string $content       내용.
+     * @param string $defaultEditor 현재 사용자에게 지정된 기본 편집기. 'html'이나 'tinymce'.
+     *
+     * @return string
+     * @used-by     CustomPostAdminInitiator::action_current_screen()
+     */
+    public function filterTheEditorContent($content, $defaultEditor)
+    {
+        return $content;
     }
 
     /**
