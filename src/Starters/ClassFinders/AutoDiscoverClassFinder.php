@@ -2,10 +2,10 @@
 
 namespace Shoplic\Axis3\Starters\ClassFinders;
 
-use RegexIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
+use RegexIterator;
 use SplFileInfo;
 
 /**
@@ -18,36 +18,47 @@ use SplFileInfo;
  */
 class AutoDiscoverClassFinder extends BaseClassFinder
 {
-    const CONTEXT_RULE_HEAD = 'head';
-    const CONTEXT_RULE_TAIL = 'tail';
-
-    /** @var string 검색의 대상 경로 */
-    private $rootPath;
-
-    /** @var string 검색 경로의 기본 네임스페이스 */
-    private $rootNamespace;
+    /**
+     * 검색 경로의 짝. 키는 경로, 값은 네임스페이스.
+     *
+     * @var array
+     */
+    private $rootPairs = [];
 
     public function find(array &$foundClasses)
     {
         if ($this->checkFindCondition()) {
-            $rootPath = $this->getRootPath();
-            $postfix  = $this->getComponentPostfix();
-            if ($rootPath && is_dir($rootPath) && $postfix) {
-                $iterator = new RegexIterator(
-                    new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath)),
-                    "/.+{$postfix}\.php$/",
-                    RecursiveRegexIterator::MATCH
-                );
-                /** @var SplFileInfo $item */
-                foreach ($iterator as $item) {
-                    list($context, $fqcn) = $this->extractContextFqcn($item);
-                    if (!isset($foundClasses[$context])) {
-                        $foundClasses[$context] = [];
+            reset($this->rootPairs);
+            while ($this->hasPairs()) {
+                $rootPath = $this->getRootPath();
+                $postfix  = $this->getComponentPostfix();
+                if ($rootPath && is_dir($rootPath) && $postfix) {
+                    $iterator = new RegexIterator(
+                        new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath)),
+                        "/.+{$postfix}\.php$/",
+                        RecursiveRegexIterator::MATCH
+                    );
+                    /** @var SplFileInfo $item */
+                    foreach ($iterator as $item) {
+                        list($context, $fqcn) = $this->extractContextFqcn($item);
+                        if (!isset($foundClasses[$context])) {
+                            $foundClasses[$context] = [];
+                        }
+                        $foundClasses[$context][] = $fqcn;
                     }
-                    $foundClasses[$context][] = $fqcn;
                 }
+                $this->nextPair();
             }
         }
+    }
+
+    public function addRootPairs(string $rootNamespace, string $rootPath)
+    {
+        if ($rootNamespace && $rootPath) {
+            $this->rootPairs[$rootPath] = $rootNamespace;
+        }
+
+        return $this;
     }
 
     /**
@@ -57,21 +68,7 @@ class AutoDiscoverClassFinder extends BaseClassFinder
      */
     public function getRootPath(): string
     {
-        return $this->rootPath;
-    }
-
-    /**
-     * 검색 대상 경로를 지정
-     *
-     * @param string $rootPath
-     *
-     * @return self
-     */
-    public function setRootPath(string $rootPath)
-    {
-        $this->rootPath = untrailingslashit($rootPath);
-
-        return $this;
+        return key($this->rootPairs);
     }
 
     /**
@@ -81,21 +78,17 @@ class AutoDiscoverClassFinder extends BaseClassFinder
      */
     public function getRootNamespace(): string
     {
-        return $this->rootNamespace;
+        return current($this->rootPairs);
     }
 
-    /**
-     * 기본 네임스페이스를 지정.
-     *
-     * @param string $namespace
-     *
-     * @return self
-     */
-    public function setRootNamespace(string $namespace)
+    protected function hasPairs()
     {
-        $this->rootNamespace = trim($namespace, '\\') . '\\';
+        return false !== current($this->rootPairs);
+    }
 
-        return $this;
+    protected function nextPair()
+    {
+        return next($this->rootPairs);
     }
 
     /**
