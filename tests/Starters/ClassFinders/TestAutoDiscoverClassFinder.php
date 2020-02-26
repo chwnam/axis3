@@ -4,6 +4,7 @@ namespace Shoplic\Axis3\Tests\Starters\ClassFinders;
 
 use Shoplic\Axis3\Starters\ClassFinders\AutoDiscoverClassFinder;
 use WP_UnitTestCase;
+
 use function Shoplic\Axis3\Functions\rmdirRecursive;
 
 class TestAutoDiscoverClassFinder extends WP_UnitTestCase
@@ -23,17 +24,9 @@ class TestAutoDiscoverClassFinder extends WP_UnitTestCase
         $info       = new \SplFileInfo(__FILE__);
 
         // 테스트 #1: context rule head 로 하고 이 파일을 테스트
-        $finder->setContextRule(AutoDiscoverClassFinder::CONTEXT_RULE_HEAD);
         $output = $reflection->invoke($finder, $info);
         // 검증 #1
         $this->assertEquals('Starters', $output[0]);
-        $this->assertEquals(TestAutoDiscoverClassFinder::class, $output[1]);
-
-        // 테스트 #2: context rule tail 로 하고 이 파일을 테스트
-        $finder->setContextRule(AutoDiscoverClassFinder::CONTEXT_RULE_TAIL);
-        $output = $reflection->invoke($finder, $info);
-        // 검증 #2
-        $this->assertEquals('ClassFinders', $output[0]);
         $this->assertEquals(TestAutoDiscoverClassFinder::class, $output[1]);
 
         // 테스트 #3: context rule 콜백으로 하고 이 파일을 테스트
