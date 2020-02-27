@@ -40,13 +40,13 @@ if (!$nonce_action) {
 }
 ?>
 
-<?php echo $content_header ?>
+<?php echo $content_header; ?>
     <table class="form-table">
-        <?php echo $content_header; ?>
+        <?php echo $table_header; ?>
         <?php foreach ($field_widgets as $widget) : ?>
             <?php $widget->renderFormTableTr(); ?>
         <?php endforeach; ?>
-        <?php echo $content_footer; ?>
+        <?php echo $table_footer; ?>
     </table>
-<?php echo $content_footer; ?>
-<?php wp_nonce_field($nonce_action, $nonce_param);
+<?php wp_nonce_field($nonce_action, $nonce_param); ?>
+<?php echo $content_footer;
