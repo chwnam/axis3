@@ -21,4 +21,9 @@ class StubFieldModel extends BaseFieldModel
 
         parent::__construct($key, $args);
     }
+
+    public function retrieve()
+    {
+        return $this->args['default'] ?? null;
+    }
 }
