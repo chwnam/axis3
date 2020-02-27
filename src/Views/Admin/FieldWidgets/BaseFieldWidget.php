@@ -241,7 +241,7 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
                 break;
 
             case 'stub':
-                if ($this->args['value']) {
+                if (isset($this->args['value']) && $this->args['value']) {
                     return $this->args['value'];
                 }
                 /** @var StubFieldModel $fieldModel */
