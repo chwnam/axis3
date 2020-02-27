@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.1.0
+2020년 02월 27일
+- 코드 안정성 향상 (96a84176, 81884ad1, 04a20640)
+- property-meta-box.php 템플릿 수정 (b607256b)
+- AutoDiscoverClassFinder API 변경 (93321dde)
+
+
 ## 0.0.9
 2020년 02월 25일
 - 함수 arrayKeyFirst(), arrayKeyLast() 추가 (2d9525a8)
