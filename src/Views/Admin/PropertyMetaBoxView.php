@@ -26,7 +26,10 @@ abstract class PropertyMetaBoxView extends MetaBoxView
      */
     abstract public function getFieldWidgets($post): array;
 
-    public function dispatch(WP_Post $post)
+    /**
+     * @param WP_Post $post
+     */
+    public function dispatch($post)
     {
         $widgets = $this->getFieldWidgets($post);
         foreach ($widgets as $widget) {
@@ -38,12 +41,12 @@ abstract class PropertyMetaBoxView extends MetaBoxView
         $this->render(
             $this->getTemplate(),
             [
-                'content_header' => $this->getContentHeader(),
-                'content_footer' => $this->getContentFooter(),
-                'table_header'   => $this->getTableHeader(),
-                'table_footer'   => $this->getTableFooter(),
-                'nonce_action'   => $this->getNonceAction(),
-                'nonce_param'    => $this->getNonceParam(),
+                'content_header' => $this->getContentHeader($post),
+                'content_footer' => $this->getContentFooter($post),
+                'table_header'   => $this->getTableHeader($post),
+                'table_footer'   => $this->getTableFooter($post),
+                'nonce_action'   => $this->getNonceAction($post),
+                'nonce_param'    => $this->getNonceParam($post),
                 'field_widgets'  => &$widgets,
             ]
         );
@@ -59,22 +62,22 @@ abstract class PropertyMetaBoxView extends MetaBoxView
         $this->template = $template;
     }
 
-    protected function getContentFooter()
+    protected function getContentFooter($post)
     {
         return '';
     }
 
-    protected function getContentHeader()
+    protected function getContentHeader($post)
     {
         return '';
     }
 
-    protected function getTableFooter()
+    protected function getTableFooter($post)
     {
         return '';
     }
 
-    protected function getTableHeader()
+    protected function getTableHeader($post)
     {
         return '';
     }

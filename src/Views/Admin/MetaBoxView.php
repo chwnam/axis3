@@ -36,14 +36,16 @@ abstract class MetaBoxView extends BaseView
      *
      * @return void
      */
-    abstract public function dispatch(WP_Post $post);
+    abstract public function dispatch($post);
 
     /**
      * nonce 액션값을 리턴해야 한다. 출력시 폼에 반드시 삽입하라.
      *
+     * @param WP_Post $post 포스트
+     *
      * @return string
      */
-    public function getNonceAction(): string
+    public function getNonceAction($post = null): string
     {
         return sanitize_key($this->getId());
     }
@@ -51,9 +53,11 @@ abstract class MetaBoxView extends BaseView
     /**
      * nonce 파라미터 문자열을 리턴해야 한다. 출력시 폼에 반드시 삽입하라.
      *
+     * @param WP_Post $post 포스트
+     *
      * @return string
      */
-    public function getNonceParam(): string
+    public function getNonceParam($post = null): string
     {
         return 'nonce-' . sanitize_key($this->getId());
     }
