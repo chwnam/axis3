@@ -64,6 +64,85 @@ class BaseView extends AxisObject implements ViewInterface
         return null;
     }
 
+    /**
+     * Embedded JS 템플릿을 삽입한다.
+     *
+     * render() 메소드와 차이점은, 이것은 여러번 불려도 $tmplId 기준으로 한 번 불린 것은 다시 불리지 않는다는 것이다.
+     * $return = true 라도 마찬가지.
+     * 템플릿 안에 script 태그를 넣지 말 것. 이 메소드에서 그 부분을 알아서 처리할 것이다.
+     *
+     * @param string $template 템플릿의 경로
+     * @param string $tmplId   템플릿 ID. 공백이면 템플릿 파일 이름에서 적절히 추출한다.
+     * @param bool   $return   출력을 리턴받으려면 true, 바로 출력하려면 false.
+     * @param bool   $internal Axis3 내부의 경로를 참조하는 경우 true.
+     *
+     * @return null|string
+     */
+    public function enqueueEjs(
+        string $template,
+        string $tmplId = '',
+        bool $return = false,
+        bool $internal = false
+    ) {
+        if (isset(static::$templates[$template])) {
+            return null;
+        }
+
+        $templatePath = false;
+
+        if (!$internal) {
+            $slug  = $this->getStarter()->getSlug();
+            $main  = $this->getStarter()->getMainFile();
+            $paths = [
+                get_stylesheet_directory() . "/{$slug}/{$template}",
+                get_template_directory() . "/{$slug}/{$template}",
+                dirname($main) . "/src/Templates/{$template}",
+                dirname(AXIS3_MAIN) . "/src/Templates/{$template}",
+            ];
+
+            foreach ($paths as $path) {
+                if (file_exists($path) && is_readable($path)) {
+                    $templatePath = $path;
+                    break;
+                }
+            }
+        } else {
+            $templatePath = plugin_dir_path(AXIS3_MAIN) . 'src/Templates/' . $template;
+        }
+
+        if ($templatePath) {
+            if (!$tmplId) {
+                $fileName = pathinfo($templatePath, PATHINFO_FILENAME);
+                if (!$fileName) {
+                    return null;
+                }
+                $tmplId = 'tmpl-' . $fileName;
+            }
+            static::$templates[$template] = $templatePath;
+
+            if ($return) {
+                ob_start();
+            }
+
+            echo "\n";
+            openTag('script', ['id' => $tmplId, 'type' => 'text/template']);
+            echo "\n";
+
+            /** @noinspection PhpIncludeInspection */
+            include $templatePath;
+
+            echo "\n";
+            closeTag('script');
+            echo "\n";
+
+            if ($return) {
+                return ob_get_clean();
+            }
+        }
+
+        return null;
+    }
+
     public function getAssetUrl(string $assetType, string $relPath, bool $internal = false): string
     {
         $key = "{$assetType}-{$relPath}";
