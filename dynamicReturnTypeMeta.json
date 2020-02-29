@@ -1,0 +1,24 @@
+{
+  "methodCalls": [
+    {
+      "class": "\\Shoplic\\Axis3\\Starters\\Starter",
+      "method": "claimObject",
+      "position": 0
+    },
+    {
+      "class": "\\Shoplic\\Axis3\\Objects\\AxisObject",
+      "method": "claimAspect",
+      "position": 0
+    },
+    {
+      "class": "\\Shoplic\\Axis3\\Objects\\AxisObject",
+      "method": "claimModel",
+      "position": 0
+    },
+    {
+      "class": "\\Shoplic\\Axis3\\Objects\\AxisObject",
+      "method": "claimView",
+      "position": 0
+    }
+  ]
+}
