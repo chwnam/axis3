@@ -2,6 +2,7 @@
 
 namespace Shoplic\Axis3\Models\ValueTypes;
 
+use Shoplic\Axis3\Interfaces\Models\ValueObjects\ValueObjectInterface;
 use Shoplic\Axis3\Interfaces\Models\ValueTypes\ValueTypeInterface;
 
 /**
@@ -31,6 +32,34 @@ class ArrayType extends BaseValueType
     public function getType(): string
     {
         return 'array';
+    }
+
+    public function import($value)
+    {
+        if ($this->elementValueType instanceof ValueObjectType) {
+            $output = [];
+            /** @var ValueObjectInterface $item 임포트 해야 할 값들. */
+            foreach ($value as $key => $item) {
+                $output[$key] = $this->elementValueType->import($item);
+            }
+            return $output;
+        }
+
+        return parent::import($value);
+    }
+
+    public function export($value)
+    {
+        if ($this->elementValueType instanceof ValueObjectType) {
+            $output = [];
+            /** @var ValueObjectInterface $item 익스포트 해야 할 값들. */
+            foreach ($value as $key => $item) {
+                $output[$key] = $this->elementValueType->export($item);
+            }
+            return $output;
+        }
+
+        return parent::export($value);
     }
 
     public function sanitize($values)
