@@ -11,16 +11,7 @@ interface SettingsModelInterface extends OptionFieldHolderInterface
      *
      * @return string
      */
-    public function getOptionGroup(): string;
-
-    /**
-     * 이 세팅의 옵션 그룹을 설정
-     *
-     * @param string $group
-     *
-     * @return void
-     */
-    public function setOptionGroup(string $group);
+    public static function getOptionGroup(): string;
 
     /**
      * 이 클래스에 있는 옵션 필드를 등록

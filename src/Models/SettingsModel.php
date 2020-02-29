@@ -21,19 +21,6 @@ use Shoplic\Axis3\Models\FieldHolders\OptionFieldHolderModel;
  */
 abstract class SettingsModel extends OptionFieldHolderModel implements SettingsModelInterface
 {
-    /** @var string 옵션 그룹 */
-    private $optionGroup = '';
-
-    public function getOptionGroup(): string
-    {
-        return $this->optionGroup;
-    }
-
-    public function setOptionGroup(string $group)
-    {
-        $this->optionGroup = sanitize_key($group);
-    }
-
     /**
      * ModelRegistrationInitiator 에 의해 자동으로 불려집니다.
      */
