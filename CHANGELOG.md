@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.1.1
+2020년 03월 01일
+- MetaFieldModel, OptionFieldModel 의 캐시 업데이트 기능 개선 (17d83cf5) 
+- SelectWidget, InputWidget 에 disabled 속성 추가 (39ff4185)
+- enqueueEjs() 메소드 추가 (beb3b630)
+- ArrayType 에서 import, export 시 ValueObject 와 제대로 연동되지 않던 문제 수정 (c259dce9)
+- Dynamic Return Type 플러그인을 위한 메타 파일 작성 (09d82f30)
+- SettingsModelInterface 인터페이스 변경 (f1e118e4)
+- MenuPageView setup() 옵션 'fixAdminHook' 추가 (9a2c23dc)
+
+
 ## 0.1.0
 2020년 02월 27일
 - 코드 안정성 향상 (96a84176, 81884ad1, 04a20640)
