@@ -355,6 +355,15 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
         }
     }
 
+    public function isDisabled(): bool
+    {
+        if (!is_null($this->args['disabled'])) {
+            return boolval($this->args['disabled']);
+        }
+
+        return false;
+    }
+
     public function getRequiredMessage()
     {
         if ($this->args['requiredMessage']) {

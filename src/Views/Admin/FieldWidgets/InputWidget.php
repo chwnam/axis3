@@ -17,6 +17,7 @@ class InputWidget extends BaseFieldWidget
                 'class'    => 'text axis3-field-widget axis3-input-widget',
                 'type'     => 'text',
                 'required' => $this->isRequired(),
+                'disabled' => $this->isDisabled(),
                 'title'    => $this->isRequired() ? $this->getRequiredMessage() : '',
             ]
         );

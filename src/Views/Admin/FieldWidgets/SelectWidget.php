@@ -23,6 +23,7 @@ class SelectWidget extends BaseFieldWidget
                 'name'     => $this->getName() . ($this->args['multiple'] ? '[]' : ''),
                 'class'    => 'axis3-field-widget axis3-select-widget',
                 'required' => $this->isRequired(),
+                'disabled' => $this->isDisabled(),
                 'title'    => $this->getRequiredMessage(),
                 'multiple' => $this->args['multiple'],
             ]

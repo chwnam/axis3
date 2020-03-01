@@ -158,6 +158,13 @@ interface FieldWidgetInterface extends ViewInterface
     public function isRequired(): bool;
 
     /**
+     * 이 필드가 잠겼는지 필수인지 리턴한다.
+     *
+     * @return bool
+     */
+    public function isDisabled(): bool;
+
+    /**
      * 이 필드가 필수일 때 필수입력임을 알리는 메시지를 리턴한다.
      *
      * @return string|callable
