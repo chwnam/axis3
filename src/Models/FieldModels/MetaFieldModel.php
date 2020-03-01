@@ -109,8 +109,8 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
         }
 
         if ($this->args['updateCache']) {
-            if (!isset(static::$cacheUpdated[$key])) {
-                static::$cacheUpdated[$key] = true;
+            if (!isset(static::$cacheUpdated[$key . '-' . $objectId])) {
+                static::$cacheUpdated[$key . '-' . $objectId] = true;
 
                 $cache = wp_cache_get($objectId, $this->getObjectType() . '_meta');
                 if (false === $cache) {
@@ -159,7 +159,7 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
             );
         }
 
-        unset(static::$cacheUpdated[$this->getKey()]);
+        unset(static::$cacheUpdated[$this->getKey() . '-' . $objectId]);
 
         $objectType = $this->getObjectType();
         $objectId   = $this->checkObjectId($objectId);
