@@ -20,6 +20,15 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
     const KEY_NOT_FOUND_USE_DEFAULT = '#useDefault';
 
     /**
+     * 워드프레스 캐시를 강제 업데이트해야 할 경우에 사용하는 플래그.
+     *
+     * @see OptionFieldModel::$cacheUpdated 주석 참고.
+     *
+     * @var bool[]
+     */
+    private static $cacheUpdated = [];
+
+    /**
      * MetaFieldModel constructor.
      *
      * @param       $key
@@ -84,28 +93,43 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
 
     public function retrieve($objectId)
     {
+        $key   = $this->getKey();
         $value = get_metadata(
             $this->getObjectType(),
             $this->checkObjectId($objectId),
-            $this->getKey(),
+            $key,
             $this->isSingle()
         );
 
         if (empty($value)) {
             $cache = wp_cache_get($objectId, $this->getObjectType() . '_meta');
-            if (!$cache || !isset($cache[$this->getKey()])) {
+            if (!$cache || !isset($cache[$key])) {
                 $value = $this->getDefault();
             }
         }
 
         if ($this->args['updateCache']) {
-            if (is_array($value) || is_scalar($value)) {
+            if (!isset(static::$cacheUpdated[$key])) {
+                static::$cacheUpdated[$key] = true;
+
                 $cache = wp_cache_get($objectId, $this->getObjectType() . '_meta');
                 if (false === $cache) {
                     $cache = [];
                 }
-                $cache[$this->getKey()][0] = $value = $this->import($value);
-                wp_cache_replace($objectId, $cache, $this->getObjectType() . '_meta');
+
+                if ($this->isSingle()) {
+                    $cache[$key][0] = $value = $this->import($value);
+                    wp_cache_replace($objectId, $cache, $this->getObjectType() . '_meta');
+                } else {
+                    if (is_array($value)) {
+                        $cache[$key] = [];
+                        foreach ($value as $k => $v) {
+                            $cache[$key][$k] = $this->import($v);
+                        }
+                        $value = $cache[$key];
+                        wp_cache_replace($objectId, $cache, $this->getObjectType() . '_meta');
+                    }
+                }
             }
         } else {
             if ($this->isSingle()) {
@@ -134,6 +158,8 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
                 $value
             );
         }
+
+        unset(static::$cacheUpdated[$this->getKey()]);
 
         $objectType = $this->getObjectType();
         $objectId   = $this->checkObjectId($objectId);

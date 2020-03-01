@@ -9,6 +9,25 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
 {
     private $context = null;
 
+    /**
+     * 워드프레스 캐시를 강제 업데이트해야 할 경우에 사용하는 플래그.
+     *
+     * ValueObject 같은 값 타입을 사용하는 옵션 모델일 때 활용된다.
+     * 이 타입의 옵션 값은 테이블에 저장시 먼저 배열 형태로 변환되고, 그 배열을 직렬화시킨다.
+     *
+     * 그리고 배열값을 읽을 때 다시 배열을 ValueObject 로 복구하는 작업을 한다.
+     * 직렬화된 문자열을 배열로 변환하는 것은 그렇다 치더라도, 매번 배열을 다시 ValueObject 변환하는 것은 비효율적이다.
+     * 모델에서 'updateCache' 옵션을 true 로 주면 retrieve() 메소드 호출시 아래처럼 동작한다.
+     *
+     * 1. import() 하여 ValueObject 같은 원래 형태로 되돌린다.
+     * 2. 그리고 이 값을 $cacheUpdated 에 기록되지 않았다면 캐시를 원래 형태의 값으로 업데이트 처리한다.
+     * 3. $cacheUpdate 에 현재 키를 플래그로 기록하여 중복된 업데이트를 방지한다.
+     *
+     * @var bool[]
+     * @see MetaFieldModel::$cacheUpdated
+     */
+    private static $cacheUpdated = [];
+
     public function __construct($key, $args = [])
     {
         $args['_fieldType'] = 'option';
@@ -47,7 +66,9 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
                 $contextValue = &$default;
             }
             if ($this->args['updateCache']) {
-                if (is_array($value)) {
+                if (!isset(static::$cacheUpdated[$this->getKey() . '_' . $context])) {
+                    static::$cacheUpdated[$this->getKey() . '_' . $context] = true;
+
                     $value[$context] = $this->import($contextValue);
                     $this->updateCache($value);
                 }
@@ -57,7 +78,9 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
         } else {
             $value = get_option($this->getKey(), $this->getDefault());
             if ($this->args['updateCache']) {
-                if (is_array($value)) {
+                if (!isset(static::$cacheUpdated[$this->getKey()])) {
+                    static::$cacheUpdated[$this->getKey()] = true;
+
                     $value = $this->import($value);
                     $this->updateCache($value);
                 }
@@ -74,8 +97,13 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
         /**
          * @see OptionFieldModel::defaultSanitizeCallback() 콜백에 현재 콘텍스트를 알리기 이해 콘텍스트 저장
          */
-        if ($this->isContextual() && $context) {
-            $this->context = sanitize_key($context);
+        if ($this->isContextual()) {
+            if ($context) {
+                $this->context = sanitize_key($context);
+                unset(static::$cacheUpdated[$this->getKey() . '_' . $context]);
+            }
+        } else {
+            unset(static::$cacheUpdated[$this->getKey()]);
         }
 
         // update_option() 함수 내부에서 sanitize 용도로 defaultSanitizeCallback() 메소드를 호출할 것임.
