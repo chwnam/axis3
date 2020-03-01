@@ -294,6 +294,8 @@ function splitArray(array $input, $key, $keyToLastOne = true): array
             $output[0] = array_slice($input, 0, $pos + 1);
             $output[1] = array_slice($input, $pos + 1);
         }
+    } else {
+        $output[0] = $input;
     }
 
     return $output;
