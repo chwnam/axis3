@@ -400,6 +400,9 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
             // null|bool: required 옵션은 필드 모델에도 있지만, null 이 아니라면 이 값을 우선한다.
             'required'         => null,
 
+            // bool: disabled 옵션. 각 필드마다 지원할 수도 있고, 아닐 수도 있다. 기본 false.
+            'disabled'         => false,
+
             // string|callable:  required 필드일 경우 기본 메시지를 오버라이드하기 위한 메시지.
             //                   이 옵션 또한 필드 모델에도 있으나, null 이 아니라면 이 값을 우선한다.
             //                   입력하지 않으면 웹브라우저의 '이 항목을 필수로 입력해 주십시오' 같은 기본 메시지를 대체한다.
