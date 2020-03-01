@@ -2,7 +2,7 @@
 
 ## 0.1.1
 2020년 03월 01일
-- MetaFieldModel, OptionFieldModel 의 캐시 업데이트 기능 개선 (17d83cf5) 
+- MetaFieldModel, OptionFieldModel 의 캐시 업데이트 기능 개선 (17d83cf5, 04e6f821) 
 - SelectWidget, InputWidget 에 disabled 속성 추가 (39ff4185)
 - enqueueEjs() 메소드 추가 (beb3b630)
 - ArrayType 에서 import, export 시 ValueObject 와 제대로 연동되지 않던 문제 수정 (c259dce9)
