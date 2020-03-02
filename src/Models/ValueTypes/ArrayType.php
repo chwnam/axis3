@@ -174,7 +174,7 @@ class ArrayType extends BaseValueType
                 // string: 요소에 대해 세정, 검증을 통과하지 못하는 요소를 어떻게 처리할지 결정한다.
                 //         다음 값 중 하나를 선택할 수 있다.
                 //
-                //         - discard: 해당 요소를 아예 폐기 처분한다.
+                //         - skip:    해당 요소를 버린다.
                 //         - default: 해당 값은 버리지만, 기본값으로 대체한다.
                 //         - error:   즉시 에러를 낸다.
                 'invalidElementPolicy' => 'skip',
