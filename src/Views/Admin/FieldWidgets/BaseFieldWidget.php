@@ -58,8 +58,11 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
 
         if ($fieldModel->getValueType() instanceof ValueObjectType) {
             if (!isset($this->args['getterMethod'])) {
-                throw new \InvalidArgumentException(__('ValueType must define \'getterMethod\' property.', 'axis3'));
-            } elseif (!method_exists($fieldModel->getValueType()->getType(), $this->args['getterMethod'])) {
+                $this->args['getterMethod'] = null;
+            } elseif (
+                $this->args['getterMethod'] &&
+                !method_exists($fieldModel->getValueType()->getType(), $this->args['getterMethod'])
+            ) {
                 throw new \InvalidArgumentException(
                     sprintf(
                         __('The value type \'%s\'does not have method \'%s\'.', 'axis3'),
@@ -250,7 +253,9 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
         }
 
         if ($value instanceof ValueObjectInterface) {
-            $value = $value->{$this->args['getterMethod']}();
+            if ($this->args['getterMethod']) {
+                $value = $value->{$this->args['getterMethod']}();
+            }
         } elseif (is_array($value) && $this->args['keyPostfix']) {
             $postfix  = array_reverse($this->args['keyPostfix']);
             $innerVal = $value;
@@ -463,8 +468,8 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
             //                    다중 배열로 지정하려면 array 를 이용한다.
             'keyPostfix'       => null,
 
-            // string: 값 타입이 valueObject 인 경우 명시해야 한다.
-            //         메소드 이름으로부터 값을 구해 온다.
+            // string: 값 타입이 valueObject 인 경우 사용할 수 있다. 메소드 이름으로부터 값을 구해 온다.
+            //         지정하지 않으면 valueObject 그대로 전달한다.
             // 'getterMethod' => null,
 
             // bool: 이 키를 설정하고 false 로 두면 brDesc=false 일 때 공간을 추가하지 않는다.
