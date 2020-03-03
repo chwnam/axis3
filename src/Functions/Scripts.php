@@ -37,7 +37,7 @@ function adminEnqueueScripts()
     wp_register_script(
         'axis3-timepicker-addon',
         $assetUrlBase . '/js/jquery-ui-timepicker-addon.min.js',
-        ['jquery-ui-datepicker'],
+        ['jquery-ui-datepicker', 'jquery-ui-slider'],
         '1.6.3',
         true
     );
