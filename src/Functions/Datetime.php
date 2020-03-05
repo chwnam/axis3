@@ -3,6 +3,7 @@
 namespace Shoplic\Axis3\Functions;
 
 use DateTime;
+use DateTimeImmutable;
 use DateTimeZone;
 use Exception;
 
@@ -93,6 +94,8 @@ function getDatetime($input = 'now', $timezone = null, $inputFormat = null)
         if ($input instanceof DateTime) {
             $output = clone $input;
             $output->setTimezone($timezone);
+        } elseif ($input instanceof DateTimeImmutable) {
+            $output = DateTime::createFromImmutable($input);
         } elseif (is_numeric($input)) {
             // is_numeric() 함수는 true, false, 빈 문자열, null 에 대해 false 값을 리턴.
             $timestamp = intval($input);
