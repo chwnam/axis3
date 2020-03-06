@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.1.2
+2020년 03월 06일
+- 버튼에도 disabled 속성 고려도록 수정 (a2de86d8)
+- getDatetime() 함수에서 입력이 DateTimeImmutable 타입인 경우 처리되도록 수정 (6d77c9dc)
+
+
 ## 0.1.1
 2020년 03월 01일
 - splitArray() 버그 수정 (64a429cf)
