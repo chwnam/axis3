@@ -125,6 +125,7 @@ class DatePickerWidget extends BaseFieldWidget
                     'class'    => 'text axis3-field-widget axis3-datepicker-widget',
                     'style'    => 'cursor: pointer; ',
                     'required' => $this->isRequired(),
+                    'disabled' => $this->isDisabled(),
                     'title'    => $this->getRequiredMessage(),
                 ]
             )
@@ -150,10 +151,11 @@ class DatePickerWidget extends BaseFieldWidget
 
         inputTag(
             [
-                'id'    => $this->getId() . '-picker-reset',
-                'type'  => 'button',
-                'value' => __('Clear', 'axis3'),
-                'class' => 'axis3-field-widget axis3-datepicker-widget button button-secondary',
+                'id'       => $this->getId() . '-picker-reset',
+                'type'     => 'button',
+                'value'    => __('Clear', 'axis3'),
+                'class'    => 'axis3-field-widget axis3-datepicker-widget button button-secondary',
+                'disabled' => $this->isDisabled(),
             ]
         );
 
