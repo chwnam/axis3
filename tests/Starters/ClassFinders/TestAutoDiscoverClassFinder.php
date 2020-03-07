@@ -17,8 +17,7 @@ class TestAutoDiscoverClassFinder extends WP_UnitTestCase
     public function testExtractContextFqcn()
     {
         $finder = new AutoDiscoverClassFinder();
-        $finder->setRootPath(dirname(AXIS3_MAIN) . '/tests');
-        $finder->setRootNamespace('Shoplic\\Axis3\\Tests\\');
+        $finder->addRootPairs('Shoplic\\Axis3\\Tests\\', dirname(AXIS3_MAIN) . '/tests');
 
         $reflection = makeMethodAccessible(AutoDiscoverClassFinder::class, 'extractContextFqcn');
         $info       = new \SplFileInfo(__FILE__);
@@ -27,15 +26,6 @@ class TestAutoDiscoverClassFinder extends WP_UnitTestCase
         $output = $reflection->invoke($finder, $info);
         // 검증 #1
         $this->assertEquals('Starters', $output[0]);
-        $this->assertEquals(TestAutoDiscoverClassFinder::class, $output[1]);
-
-        // 테스트 #3: context rule 콜백으로 하고 이 파일을 테스트
-        $finder->setContextRule(function () {
-            return 'MyContext';
-        });
-        $output = $reflection->invoke($finder, $info);
-        // 검증 #3
-        $this->assertEquals('MyContext', $output[0]);
         $this->assertEquals(TestAutoDiscoverClassFinder::class, $output[1]);
     }
 
@@ -80,8 +70,7 @@ class TestAutoDiscoverClassFinder extends WP_UnitTestCase
         // 테스트 #1: Initiator 디렉토리를 대상으로 검색
         $foundClasses = [];
         $finder       = new AutoDiscoverClassFinder();
-        $finder->setRootPath(__DIR__ . '/TestDir/Temp/Initiators');
-        $finder->setRootNamespace('Shoplic\\Axis3\\Tests\\Temp\\Initiators\\');
+        $finder->addRootPairs('Shoplic\\Axis3\\Tests\\Temp\\Initiators\\', __DIR__ . '/TestDir/Temp/Initiators');
         $finder->setComponentPostfix('Initiator');
         $finder->find($foundClasses);
 

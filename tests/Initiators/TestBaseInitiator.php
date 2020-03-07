@@ -3,9 +3,8 @@
 namespace Shoplic\Axis3\Tests\Initiators;
 
 use Shoplic\Axis3\Initiators\BaseInitiator;
-use Shoplic\Axis3\Interfaces\Views\ViewInterface;
-use Shoplic\Axis3\Objects\AxisObject;
 use Shoplic\Axis3\Starters\Starter;
+use Shoplic\Axis3\Views\BaseView;
 use WP_UnitTestCase;
 
 class TestBaseInitiator extends WP_UnitTestCase
@@ -75,7 +74,7 @@ class TemporaryBaseInitiatorInitiator extends BaseInitiator
  *
  * @package Shoplic\Axis3\Tests\Initiators
  */
-class TemporaryBaseInitiatorView extends AxisObject implements ViewInterface
+class TemporaryBaseInitiatorView extends BaseView
 {
     private $testValue = null;
 
