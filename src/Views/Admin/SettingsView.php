@@ -5,6 +5,7 @@ namespace Shoplic\Axis3\Views\Admin;
 use Shoplic\Axis3\Interfaces\Views\Admin\FieldWIdgets\FieldWidgetInterface;
 use Shoplic\Axis3\Interfaces\Views\Admin\SettingsViewInterface;
 use Shoplic\Axis3\Views\BaseView;
+
 use function Shoplic\Axis3\Functions\toPascalCase;
 
 abstract class SettingsView extends BaseView implements SettingsViewInterface
@@ -187,7 +188,7 @@ abstract class SettingsView extends BaseView implements SettingsViewInterface
         return $this->fields;
     }
 
-    private function addSettingsSections()
+    protected function addSettingsSections()
     {
         foreach ($this->getSections() as $key => $section) {
             $title    = $section['title'] ?? '';
@@ -199,7 +200,7 @@ abstract class SettingsView extends BaseView implements SettingsViewInterface
     /**
      * @uses SettingsView::defaultRenderField()
      */
-    private function addSettingsFields()
+    protected function addSettingsFields()
     {
         foreach ($this->getFields() as $key => $field) {
             /** @var array $args */
