@@ -247,7 +247,7 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
                 /** bool 문맥적 옵션을 지원합니다. 기본 false. */
                 'contextual'           => false,
 
-                /** bool 옵션 그룹의 이름입니다. 옵션 API 사용을 위해 필요합니다. */
+                /** string 옵션 그룹의 이름입니다. 옵션 API 사용을 위해 필요합니다. */
                 'group'                => '',
 
                 /** bool REST API 에 보일 지 결정합니다. 기본 false */

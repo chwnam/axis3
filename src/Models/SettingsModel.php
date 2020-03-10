@@ -109,7 +109,9 @@ abstract class SettingsModel extends OptionFieldHolderModel implements SettingsM
     {
         $argument = parent::getOptionFieldArgs($args);
 
-        $argument['group'] = $this->getOptionGroup();
+        if (empty($argument['group'])) {
+            $argument['group'] = $this->getOptionGroup();
+        }
 
         return $argument;
     }
