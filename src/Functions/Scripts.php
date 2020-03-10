@@ -75,9 +75,16 @@ function adminEnqueueScripts()
     );
 
     wp_register_script(
+        'axis3-clipboard',
+        $assetUrlBase . '/js/clipboard.min.js',
+        [],
+        '2.0.6'
+    );
+
+    wp_register_script(
         'axis3-prism',
         $assetUrlBase . '/js/prism.min.js',
-        [],
+        ['axis3-clipboard'],
         '1.17.1',
         true
     );
