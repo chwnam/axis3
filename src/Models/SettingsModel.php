@@ -29,10 +29,10 @@ abstract class SettingsModel extends OptionFieldHolderModel implements SettingsM
         /** @var OptionFieldModelInterface $optionField */
         foreach ($this->getAllOptionFields() as $optionField) {
             if (!$optionField->isAutoload()) {
-                add_action("update_option_{$optionField->getKey()}", [$this, 'correctAutoloadField'], 10, 3);
+                add_action("update_option_{$optionField->getKey()}", [$this, 'correctAutoloadField'], 1, 3);
             }
             if ($optionField->isContextual()) {
-                add_filter("pre_update_option_{$optionField->getKey()}", [$this, 'preUpdateContextualOption'], 10, 3);
+                add_filter("pre_update_option_{$optionField->getKey()}", [$this, 'preUpdateContextualOption'], 1, 3);
             }
         }
     }

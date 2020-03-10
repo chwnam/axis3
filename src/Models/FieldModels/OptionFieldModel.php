@@ -33,6 +33,16 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
         $args['_fieldType'] = 'option';
 
         parent::__construct($key, $args);
+
+        if ($this->args['beforeUpdate'] && is_callable($this->args['beforeUpdate'])) {
+            $priority = $this->args['beforeUpdatePriority'] ? $this->args['beforeUpdatePriority'] : 10;
+            add_filter('pre_update_option_' . $this->getKey(), $this->args['beforeUpdate'], $priority, 3);
+        }
+
+        if ($this->args['afterUpdate'] && is_callable($this->args['afterUpdate'])) {
+            $priority = $this->args['afterUpdatePriority'] ? $this->args['afterUpdatePriority'] : 10;
+            add_action('update_option_' . $this->getKey(), $this->args['afterUpdate'], $priority, 3);
+        }
     }
 
     public function isAutoload(): bool
@@ -232,16 +242,45 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
             parent::getDefaultArgs(),
             [
                 /** bool 옵션 오토로딩을 지원합니다. 기본 true. */
-                'autoload'   => true,
+                'autoload'             => true,
 
                 /** bool 문맥적 옵션을 지원합니다. 기본 false. */
-                'contextual' => false,
+                'contextual'           => false,
 
                 /** bool 옵션 그룹의 이름입니다. 옵션 API 사용을 위해 필요합니다. */
-                'group'      => '',
+                'group'                => '',
 
                 /** bool REST API 에 보일 지 결정합니다. 기본 false */
-                'showInRest' => false,
+                'showInRest'           => false,
+
+                /**
+                 * callable 업데이트 전 콜백. pre_update_option_{$option} 필터.
+                 *          콜백은 3개의 인자를 받음.
+                 *          주의! 필터라서 반드시 $value 리턴이 있어야 함.
+                 *
+                 * @param mixed  $value
+                 * @param mixed  $old_value
+                 * @param string $option_name
+                 *
+                 * @return mixed
+                 * @see update_option()
+                 */
+                'beforeUpdate'         => null,
+                'beforeUpdatePriority' => null,
+
+                /**
+                 * callable 업데이트 후 콜백. update_option_{$option} 액선.
+                 *          콜백은 3개의 인자를 받음.
+                 *          주의! 필터라서 반드시 $value 리턴이 있어야 함.
+                 *
+                 * @param mixed $value
+                 * @param mixed $old_value
+                 * @paramstring $option_name
+                 *
+                 * @see update_option()
+                 */
+                'afterUpdate'          => null,
+                'afterUpdatePriority'  => null,
             ]
         );
     }
