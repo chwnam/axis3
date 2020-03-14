@@ -3,7 +3,7 @@
   "description": "Axis 3 Framework for WordPress Development",
   "type": "wordpress-plugin",
   "require": {
-    "erusev/parsedown": "^1.7"
+    "erusev/parsedown-extra": "^0.8.1"
   },
   "autoload": {
     "psr-4": {

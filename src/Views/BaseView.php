@@ -363,11 +363,23 @@ class BaseView extends AxisObject implements ViewInterface
         return $return ? ob_get_clean() : null;
     }
 
-    public static function renderMarkdown(string $file, string $id, callable $contentFilter = null)
-    {
+    public static function renderMarkdown(
+        string $file,
+        string $id,
+        callable $contentFilter = null,
+        bool $useExtra = false
+    ) {
         if (!class_exists('\\Parsedown')) {
             echo '<h1>' . esc_html__('Parsedown Not Found', 'axis3') . '</h1>';
             echo '<p>' . __('<a href="https://parsedown.org/">Parsedown</a> is not installed.', 'axis3') . '</p>';
+            _e(
+                '<p>Install it by running <code>composer install</code> command in the <strong>Axis3 root path</strong>.</p>',
+                'axis3'
+            );
+            return;
+        } elseif ($useExtra && !class_exists('\\ParsedownExtra')) {
+            echo '<h1>' . esc_html__('ParsedownExtra Not Found', 'axis3') . '</h1>';
+            echo '<p>' . __('<a href="https://parsedown.org/">ParsedownExtra</a> is not installed.', 'axis3') . '</p>';
             _e(
                 '<p>Install it by running <code>composer install</code> command in the <strong>Axis3 root path</strong>.</p>',
                 'axis3'
@@ -383,7 +395,7 @@ class BaseView extends AxisObject implements ViewInterface
 
         openTag('div', ['id' => $id, 'class' => 'markdown-body']);
         {
-            $pd      = new Parsedown();
+            $pd      = $useExtra ? new \ParsedownExtra() : new Parsedown();
             $content = file_get_contents($file);
 
             if ($contentFilter) {
