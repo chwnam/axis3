@@ -2,10 +2,11 @@
 
 namespace Shoplic\Axis3\Cli;
 
+use Shoplic\Axis3\Starters\ScanCache;
 use WP_Cli;
 
 /**
- * Axis 3 scaffolding script.
+ * Axis 3 CLI 핸들러
  *
  * @package Shoplic\Axis3\Cli
  * @since   1.0.0

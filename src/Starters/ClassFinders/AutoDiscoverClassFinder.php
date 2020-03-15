@@ -44,7 +44,7 @@ class AutoDiscoverClassFinder extends BaseClassFinder
                         if (!isset($foundClasses[$context])) {
                             $foundClasses[$context] = [];
                         }
-                        $foundClasses[$context][] = $fqcn;
+                        $foundClasses[$context][$item->getRealPath()] = $fqcn;
                     }
                 }
                 $this->nextPair();

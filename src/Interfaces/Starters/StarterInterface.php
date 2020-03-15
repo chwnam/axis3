@@ -4,7 +4,6 @@ namespace Shoplic\Axis3\Interfaces\Starters;
 
 use Exception;
 use Shoplic\Axis3\Interfaces\Initiators\InitiatorInterface;
-use Shoplic\Axis3\Interfaces\Models\ModelInterface;
 use Shoplic\Axis3\Interfaces\Objects\AxisObjectInterface;
 use Shoplic\Axis3\Interfaces\Starters\ClassFinders\ClassFinderInterface;
 
@@ -40,6 +39,20 @@ interface StarterInterface
      * @throws Exception 클래스 검색자의 콤포넌트 접미사가 설정되지 않았으면 예외를 던진다.
      */
     public function addClassFinder(ClassFinderInterface $classFinder);
+
+    /**
+     * 클래스 검색자 목록을 리턴.
+     */
+    public function getClassFinders();
+
+    /**
+     * 클래스 검색자들을 삭제한다.
+     *
+     * @param string $componentPostfix 콤포넌트 접미를 제시. 해당된 검색자들만 삭제함.
+     *
+     * @return void
+     */
+    public function unsetClassFinders(string $componentPostfix);
 
     /**
      * 각 오브젝트의 초기 인자를 별도로 설정한다.

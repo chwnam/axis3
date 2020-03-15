@@ -112,7 +112,7 @@ class AutoHookInitiator extends BaseInitiator
      *
      * @return array
      */
-    protected function getCallbackParams()
+    public function getCallbackParams()
     {
         $patterns = [
             //                                                    p.       a.      h.      d.
