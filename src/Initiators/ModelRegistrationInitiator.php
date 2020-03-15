@@ -68,8 +68,6 @@ class ModelRegistrationInitiator extends BaseInitiator
                 }
             }
         }
-
-        $this->getStarter()->unsetClassFinders('Model');
     }
 
     public function activationSetup()

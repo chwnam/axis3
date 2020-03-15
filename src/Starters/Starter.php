@@ -126,7 +126,6 @@ class Starter implements StarterInterface
         }
 
         $this->objectSetupArgs = null;
-        $this->unsetClassFinders('Initiator');
     }
 
     public function addClassFinder(ClassFinderInterface $classFinder)
@@ -158,20 +157,6 @@ class Starter implements StarterInterface
     public function getClassFinders()
     {
         return $this->classFinders;
-    }
-
-    /**
-     * 클래스 검색자들을 삭제한다.
-     *
-     * @param string $componentPostfix 콤포넌트 접미를 제시. 해당된 검색자들만 삭제함.
-     *
-     * @return void
-     */
-    public function unsetClassFinders(string $componentPostfix)
-    {
-        if (isset($this->classFinders[$componentPostfix]) && !$this->classFinders[$componentPostfix]) {
-            $this->classFinders[$componentPostfix] = null;
-        }
     }
 
     public function addObjectSetupArgs(string $fqcn, array $args)
