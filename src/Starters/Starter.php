@@ -102,7 +102,14 @@ class Starter implements StarterInterface
 
         foreach ($this->getInitiatorClasses() as $context => $initiatorClasses) {
             if ($this->checkContext($context)) {
-                foreach ($initiatorClasses as $initiatorClass) {
+                foreach ($initiatorClasses as $path => $initiatorClass) {
+                    /**
+                     * 명시적으로 각 디렉토리를 알고 있어서 오토로더를 거치지 않고 바로 require 처리 가증
+                     *
+                     * @noinspection PhpIncludeInspection
+                     */
+                    require_once $path;
+
                     // 각 개시자 클래스에서 static public property 로서 $disabled = true 로 지정되어 있으면
                     // 해당 개시자 클래스는 동작하지 않는다. 디버깅시 잠시 기능을 죽일 때 유용할 것이다.
                     if (!property_exists($initiatorClass, 'disabled') || !$initiatorClass::$disabled) {
