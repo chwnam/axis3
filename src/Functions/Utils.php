@@ -416,3 +416,191 @@ function arrayKeyLast(array &$array)
     end($array);
     return key($array);
 }
+
+
+/**
+ * 입력된 문자열을 배열로 만든다.
+ *
+ * @param string $text         입력 문자열.
+ * @param int    $split_length 뭉칠 글자 개수.
+ *
+ * @return string[]
+ */
+function strSplit($text, $split_length = 1)
+{
+    return preg_split('/(.{' . $split_length . '})/su', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+}
+
+
+/**
+ * 한글 자소 분리를 한다.
+ *
+ * @param string $input 입력 문자열. UTF-8.
+ *
+ * @return array 분리된 자소.
+ *               각 원소는 길이 3인 배열, 혹은 문자열.
+ *               한글의 경우 초성, 중성, 종성대로 분리된 배열. 종성이 없다면 공백으로 메꾼다.
+ *               만약 단모음(ㄱ, ㄴ, ㄷ, ...), 단자음(ㅏ, ㅑ, ㅓ, ...)으로만 된 글자였다면
+ *               마찬가지로 길이 3인 배열인데, 가장 첫번째에 그 글자가 나오고 두 개의 공백이 이어져 항상 길이 3을 맞춘다.
+ *               한글이 아니면 그냥 문자열.
+ */
+function splitHangul(string $input)
+{
+    $output = [];
+
+    $hl = [
+        'ㄱ',
+        'ㄲ',
+        'ㄴ',
+        'ㄷ',
+        'ㄸ',
+        'ㄹ',
+        'ㅁ',
+        'ㅂ',
+        'ㅃ',
+        'ㅅ',
+        'ㅆ',
+        'ㅇ',
+        'ㅈ',
+        'ㅉ',
+        'ㅊ',
+        'ㅋ',
+        'ㅌ',
+        'ㅍ',
+        'ㅎ',
+    ];
+
+    $vl = [
+        'ㅏ',
+        'ㅐ',
+        'ㅑ',
+        'ㅒ',
+        'ㅓ',
+        'ㅔ',
+        'ㅕ',
+        'ㅖ',
+        'ㅗ',
+        'ㅘ',
+        'ㅙ',
+        'ㅚ',
+        'ㅛ',
+        'ㅜ',
+        'ㅝ',
+        'ㅞ',
+        'ㅟ',
+        'ㅠ',
+        'ㅡ',
+        'ㅢ',
+        'ㅣ',
+    ];
+
+    $tl = [
+        '',
+        'ㄱ',
+        'ㄲ',
+        'ㄳ',
+        'ㄴ',
+        'ㄵ',
+        'ㄶ',
+        'ㄷ',
+        'ㄹ',
+        'ㄺ',
+        'ㄻ',
+        'ㄼ',
+        'ㄽ',
+        'ㄾ',
+        'ㄿ',
+        'ㅀ',
+        'ㅁ',
+        'ㅂ',
+        'ㅄ',
+        'ㅅ',
+        'ㅆ',
+        'ㅇ',
+        'ㅈ',
+        'ㅊ',
+        'ㅋ',
+        'ㅌ',
+        'ㅍ',
+        'ㅎ',
+    ];
+
+    foreach (strSplit($input) as $chr) {
+        $code = mb_ord($chr, 'UTF-8');
+        if (44032 <= $code && $code <= 55203) {
+            $t        = $code - 44032;
+            $hi       = (int)($t / 588);
+            $vi       = (int)(($t % 588) / 28);
+            $ti       = (int)($t % 28);
+            $output[] = [$hl[$hi], $vl[$vi], $tl[$ti]];
+        } elseif (12593 <= $code && $code <= 12643) {
+            $output[] = [$chr, '', ''];
+        } else {
+            $output[] = $chr;
+        }
+    }
+
+    return $output;
+}
+
+
+/**
+ * 단어에 따라 알맞는 조사 처리를 한다.
+ *
+ * @param string $input 입력 문장. 마지막 글자를 보고 판단한다.
+ *                      마지막 글자가 알파벳인 경우라면 알파벳의 발음에서 추측한다. 'a'라면 '에이', 'm'이면 '엠' 처럼.
+ *                      그러므로 영어로 입력되었을 때는 완벽하게 조사가 처리되지 않을 수 있다.
+ *                      마지막 글자가 숫자인 경우라면 영, 일, 이, 삼, ... , 구라는 발음에서 추측한다.
+ *                      마지막 글자가 단자음이라면 항상 받침이 있을 때, 단모음이면 받침이 없을때로 해석한다.
+ * @param string $a     받침이 있을 때. 은, 을, 이.
+ * @param string $b     받침이 없을 때. 는, 를, 가.
+ *
+ * @return string 단어와 조사를 합친 문자열. 만약 공백이 입력된다면 공백이 출력.
+ *
+ */
+function josa(string $input, string $a, string $b): string
+{
+    $output = '';
+    $split  = strSplit($input);
+    $last   = $split[count($split) - 1];
+
+    if (is_numeric($last)) {
+        if (in_array($last, ['0', '1', '3', '6', '7', '8'])) {
+            $output = $input . $a;
+        } else {
+            $output = $input . $b;
+        }
+    } elseif (preg_match('/[A-Z]/i', $last)) {
+        if (in_array(strtolower($last), ['l', 'm', 'n', 'r'])) {
+            $output = $input . $a;
+        } else {
+            $output = $input . $b;
+        }
+    } else {
+        $s = splitHangul($last);
+        if (3 === count($s[0])) {
+            if (!$s[0][1] && !$s[0][2]) {
+                // 단모음 단자음.
+                $code = mb_ord($last, 'UTF-8');
+                if (12593 <= $code && $code <= 12622) {
+                    // 단모음
+                    $output = $input . $b;
+                } elseif (12623 <= $code && $code <= 12643) {
+                    // 단자음
+                    $output = $input . $a;
+                }
+            } elseif ($s[0][1] && !$s[0][2]) {
+                // 받침 없음.
+                $output = $input . $b;
+            } else {
+                // 바침 있음.
+                $output = $input . $a;
+            }
+        } else {
+            // whitespace or unknown case....
+            $output = $input;
+        }
+    }
+
+    return $output;
+}
