@@ -3,6 +3,7 @@
 namespace Shoplic\Axis3\Views;
 
 use Parsedown;
+use Shoplic\Axis3\Aspects\ScriptPropFilterAspect;
 use Shoplic\Axis3\Interfaces\Views\ViewInterface;
 use Shoplic\Axis3\Objects\AxisObject;
 
@@ -307,6 +308,13 @@ class BaseView extends AxisObject implements ViewInterface
                 wp_add_inline_script($handle, $inline, $inlinePosition);
             }
         }
+
+        return $this;
+    }
+
+    public function enableScriptPropFilter($handle, $type = ScriptPropFilterAspect::TYPE_DEFER)
+    {
+        $this->claimAspect(ScriptPropFilterAspect::class)->enableScriptProp($handle, $type);
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace Shoplic\Axis3\Interfaces\Starters;
 
 use Exception;
+use Shoplic\Axis3\Aspects\ScriptPropFilterAspect;
 use Shoplic\Axis3\Interfaces\Initiators\InitiatorInterface;
 use Shoplic\Axis3\Interfaces\Objects\AxisObjectInterface;
 use Shoplic\Axis3\Interfaces\Starters\ClassFinders\ClassFinderInterface;
@@ -33,6 +34,7 @@ interface StarterInterface
 
     /**
      * 클래스 검색자를 추가한다.
+     *
      * @param ClassFinderInterface $classFinder
      *
      * @return self
@@ -192,6 +194,30 @@ interface StarterInterface
      */
     public function setModelRegistrationEnabled(bool $enabled);
 
+
+    /**
+     * 스크립트 속성 필터를 쓸지 결정. 기본은 TRUE.
+     *
+     * @return bool
+     */
+    public function isScriptPropFilterEnabled(): bool;
+
+    /**
+     * 스크립트 속성 필터 사용 여부를 결정
+     *
+     * @param bool $enabled
+     *
+     * @return self
+     */
+    public function setScriptPropFilterEnabled(bool $enabled);
+
+    /**
+     * 속성 필터 객체 리턴. 사용하지 않는다면, NULL 리턴.
+     *
+     * @return ScriptPropFilterAspect|NULL
+     */
+    public function getScriptPropFilter();
+
     /**
      * 블로그 ID 반환
      *
@@ -202,12 +228,12 @@ interface StarterInterface
     /**
      * 블로그 ID 설정
      *
-     * @param null|int|int[]|callable $blogId  정수, 정수의 배열, 함수를 넣을 수 있다.
-     *                                         워드프레스가 멀티사이트 환경인 경우 이 개시자의 동작 기준이 된다.
-     *                                         - null:     모든 멀티사이트에서 동작한다.
-     *                                         - int:      특정 블로그 ID 와 일치하는 경우 동작한다.
-     *                                         - int[]:    블로그 ID 가 제시된 배열에 포함된 경우 동작한다.
-     *                                         - callable: 콜백 함수에 의해 판단한다. 개시자 객체가 콜백 함수의
+     * @param null|int|int[]|callable $blogId              정수, 정수의 배열, 함수를 넣을 수 있다.
+     *                                                     워드프레스가 멀티사이트 환경인 경우 이 개시자의 동작 기준이 된다.
+     *                                                     - null:     모든 멀티사이트에서 동작한다.
+     *                                                     - int:      특정 블로그 ID 와 일치하는 경우 동작한다.
+     *                                                     - int[]:    블로그 ID 가 제시된 배열에 포함된 경우 동작한다.
+     *                                                     - callable: 콜백 함수에 의해 판단한다. 개시자 객체가 콜백 함수의
      *                                                     인자로 전달된다.
      *
      * @return self
