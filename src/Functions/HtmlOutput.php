@@ -22,6 +22,15 @@ function formatAttr(array $attributes): string
 
         /** @link https://html.spec.whatwg.org/multipage/indices.html#attributes-3 */
         switch ($key) {
+            case 'accept':
+                $func = function ($key, $value) {
+                    if (is_string($value)) {
+                        $value = array_filter(array_map('trim', explode(',', $value)));
+                    }
+                    return $key . '=' . encloseString(implode(', ', array_map('sanitize_mime_type', $value)));
+                };
+                break;
+
             case 'class':
                 $func = function ($key, $value) {
                     if (is_string($value)) {
@@ -255,8 +264,8 @@ function selectTag(
             $headingOption[1],
             $selected,
             [
-                'disabled'  => true,
-                'selected'  => $selected == $headingOption[0],
+                'disabled' => true,
+                'selected' => $selected == $headingOption[0],
             ],
             false
         );
@@ -266,8 +275,8 @@ function selectTag(
             $headingOption,
             $selected,
             [
-                'disabled'  => true,
-                'selected'  => empty($selected),
+                'disabled' => true,
+                'selected' => empty($selected),
             ],
             false
         );
