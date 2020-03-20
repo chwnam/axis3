@@ -1,4 +1,11 @@
 # CHANGELOG
+## 0.1.7
+2020년 03월 20일
+- ScriptPropFilter 기능 추가. (bce4a640)
+- HTML accept 속성에 대한 처리 추가. (51312931)
+- 'splitHangul'에서  'decomposeHangul'로 함수 이름 변경. (3dc1e733)
+
+
 ## 0.1.6
 2020년 03월 19일
 - 함수 strSplit(), splitHangul(), josa(), 그리고 테스트 코드 추가 (a1c287aa)
