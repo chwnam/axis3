@@ -444,7 +444,7 @@ function strSplit($text, $split_length = 1)
  *               마찬가지로 길이 3인 배열인데, 가장 첫번째에 그 글자가 나오고 두 개의 공백이 이어져 항상 길이 3을 맞춘다.
  *               한글이 아니면 그냥 문자열.
  */
-function splitHangul(string $input)
+function decomposeHangul(string $input)
 {
     $output = [];
 
@@ -577,7 +577,7 @@ function josa(string $input, string $a, string $b): string
             $output = $input . $b;
         }
     } else {
-        $s = splitHangul($last);
+        $s = decomposeHangul($last);
         if (3 === count($s[0])) {
             if (!$s[0][1] && !$s[0][2]) {
                 // 단모음 단자음.
@@ -603,4 +603,43 @@ function josa(string $input, string $a, string $b): string
     }
 
     return $output;
+}
+
+
+/**
+ * 조사 함수 래핑. 은/는 구별.
+ *
+ * @param string $input
+ *
+ * @return string
+ */
+function josaEunNun(string $input): string
+{
+    return josa($input, '은', '는');
+}
+
+
+/**
+ * 조사 함수 래핑. 을/를 구별.
+ *
+ * @param string $input
+ *
+ * @return string
+ */
+function josaEulLul(string $input): string
+{
+    return josa($input, '을', '를');
+}
+
+
+/**
+ * 조사함수 래핑. 이/가 구별.
+ *
+ * @param string $input
+ *
+ * @return string
+ */
+function josaYiGa(string $input): string
+{
+    return josa($input, '이', '가');
 }

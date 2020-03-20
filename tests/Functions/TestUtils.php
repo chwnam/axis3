@@ -1,7 +1,7 @@
 <?php
 
+use function Shoplic\Axis3\Functions\decomposeHangul;
 use function Shoplic\Axis3\Functions\josa;
-use function Shoplic\Axis3\Functions\splitHangul;
 use function Shoplic\Axis3\Functions\strSplit;
 
 class TestUtils extends WP_UnitTestCase
@@ -21,7 +21,7 @@ class TestUtils extends WP_UnitTestCase
                 ['ㄻ', '', ''],
                 ['ㄼ', '', ''],
             ],
-            splitHangul('ㄺㄻㄼ')
+            decomposeHangul('ㄺㄻㄼ')
         );
 
         $this->assertEquals(
@@ -32,7 +32,7 @@ class TestUtils extends WP_UnitTestCase
                 ' ',
                 ['ㄱ', 'ㅡ', 'ㄹ'],
             ],
-            splitHangul('ㅎㅏㄴ 글')
+            decomposeHangul('ㅎㅏㄴ 글')
         );
 
         $this->assertEquals(
@@ -43,7 +43,7 @@ class TestUtils extends WP_UnitTestCase
                 ['ㅅ', 'ㅔ', ''],
                 ['ㅇ', 'ㅛ', ''],
             ],
-            splitHangul('안녕하세요')
+            decomposeHangul('안녕하세요')
         );
     }
 
