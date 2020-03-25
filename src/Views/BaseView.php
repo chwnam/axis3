@@ -9,6 +9,7 @@ use Shoplic\Axis3\Objects\AxisObject;
 
 use function Shoplic\Axis3\Functions\closeTag;
 use function Shoplic\Axis3\Functions\openTag;
+use function Shoplic\Axis3\Functions\strStartsWith;
 use function Shoplic\Axis3\Functions\toPascalCase;
 
 class BaseView extends AxisObject implements ViewInterface
@@ -118,6 +119,9 @@ class BaseView extends AxisObject implements ViewInterface
                     return null;
                 }
                 $tmplId = 'tmpl-' . $fileName;
+            }
+            if (!strStartsWith('tmpl-', $tmplId)) {
+                $tmplId = 'tmpl-' . $tmplId;
             }
             static::$templates[$template] = $templatePath;
 
