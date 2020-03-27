@@ -120,7 +120,7 @@ class BaseView extends AxisObject implements ViewInterface
                 }
                 $tmplId = 'tmpl-' . $fileName;
             }
-            if (!strStartsWith('tmpl-', $tmplId)) {
+            if (!strStartsWith($tmplId, 'tmpl-')) {
                 $tmplId = 'tmpl-' . $tmplId;
             }
             static::$templates[$template] = $templatePath;
