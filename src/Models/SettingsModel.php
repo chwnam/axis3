@@ -39,6 +39,26 @@ abstract class SettingsModel extends OptionFieldHolderModel implements SettingsM
 
     public function activationSetup()
     {
+        // autoload = 'no' 임에도 'yes'로 설정되어있는 옵션이 있다면 변경 처리한다.
+        // 옵션 필드는 저장시 이전값과 다른 값이 들어오지 않으면 업데이트 쿼리가 실행되지 않고,
+        // 따라서 autoload 변경 처리 액션도 동작하지 않는다.
+        // 또한 개발이 진행 중 옵션의 'autoload' 옵션이 변경되었다면 변경된 설정을 쉽게 적용하기 위해 사용할 수 있다.
+        $allOptionNames = [];
+        foreach ($this->getAllOptionFields() as $field) {
+            if (!$field->isAutoload()) {
+                $allOptionNames[] = $field->getKey();
+            }
+        }
+        if ($allOptionNames) {
+            $wpdb = self::getWpdb();
+            $pad  = implode(', ', array_pad([], count($allOptionNames), '%s'));
+            $wpdb->query(
+                $wpdb->prepare(
+                    "UPDATE `{$wpdb->options}` SET `autoload` = 'no' WHERE `option_name` IN ({$pad}) AND `autoload` = 'yes'",
+                    $allOptionNames
+                )
+            );
+        }
     }
 
     public function deactivationCleanup()
