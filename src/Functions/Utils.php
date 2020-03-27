@@ -643,3 +643,49 @@ function josaYiGa(string $input): string
 {
     return josa($input, '이', '가');
 }
+
+
+/**
+ * 문자열, 혹은 문자열의 배열을 입력받아 필터링 처리한다.
+ *
+ * 1. 입력값이 문자열이라면 주어진 토큰 기반으로 부숴뜨려 배열로 만든다. 입력값이 배열이면 이 과정은 생략.
+ * 2. 배열에서 트리밍 처리를 시행. 기본은 문자열의 앞뒤로 붙은 공백을 제거하는 trim 함수 사용.
+ * 3. 공백인 문자열 제거. 즉, array_filter() 적용.
+ * 4. 중복된 문자열 제거. 즉, array_unique() 적용.
+ * 5. 선택적으로 분리된 문자열을 다시 합칠 수 있음.
+ *
+ * @param array|string    $array   입력.
+ * @param string          $token   구분자. 입력이 문자열 형태면 이 문자를 기준으로 explode() 함수 적용.
+ * @param string|callable $trimmer 분리된 문자열에 대해 트리밍 처리할 함수. 기본 trim.
+ * @param bool|callable   $filter  array_filter() 적용 여부. 기본 true. 호출 가능한 함수시 해당 콜백으로 호출.
+ * @param bool|int        $unique  array_unique() 적용 여부. 기본 true. 정수로 입력시 sort_flags 로 인식한다.
+ *                                 주의. array_unique() 를 명시적으로 적용시키고 싶지 않으면 'false'를 입력해야 한다.
+ *                                 그렇지 않으면 SORT_REGULAR 상수값인 0과 혼동되어 원하는 대로 되지 않는다.
+ * @param bool            $implode 마지막에 implode() 함수를 적용하여 문자열로 리턴시킬지 지정. 기본 true.
+ *
+ * @return array|string 배열 혹은 문자열. 적절하지 못한 입력값, 호출 불가능한 $trimmer 입력시에는
+ *                      implode 여부에 따라 빈 배열, 혹은 공백을 리턴하게 된다.
+ *
+ */
+function filterStringList($array, $token = "\r\n", $trimmer = 'trim', $filter = true, $unique = true, $implode = true)
+{
+    if (is_string($array)) {
+        $array = explode($token, $array);
+    }
+
+    if (!is_array($array) || !is_callable($trimmer)) {
+        return $implode ? '' : [];
+    }
+
+    $array = array_map($trimmer, $array);
+
+    if ($filter) {
+        $array = array_filter($array, is_callable($filter) ? $filter : null);
+    }
+
+    if (false !== $unique) {
+        $array = array_unique($array, true === $unique ? SORT_STRING : $unique);
+    }
+
+    return $implode ? implode($token, $array) : $array;
+}
