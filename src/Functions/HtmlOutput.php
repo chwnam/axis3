@@ -27,7 +27,9 @@ function formatAttr(array $attributes): string
                     if (is_string($value)) {
                         $value = array_filter(array_map('trim', explode(',', $value)));
                     }
-                    return $key . '=' . encloseString(implode(', ', array_map('sanitize_mime_type', $value)));
+                    return $key . '=' . encloseString(
+                            implode(', ', array_unique(array_map('sanitize_mime_type', $value)))
+                        );
                 };
                 break;
 
@@ -203,19 +205,19 @@ function optionTag(string $value, string $label, string $selected, array $attrib
 /**
  * select 태그를 출력.
  *
- * @param array              $options          키 - 값 배열을 이용해 옵션 목록을 제공할 수 있다.
+ * @param array              $options 키 - 값 배열을 이용해 옵션 목록을 제공할 수 있다.
  *                                             한편 값이 재차 배열인 경우는 이 키는 옵션 그룹의 레이블로, 값은 옵션 그룹의 옵션으로 쓰인다.
- * @param string             $selected         선택된 값.
- * @param array              $attributes       <select> 태그에 사용할 속성들.
+ * @param string             $selected 선택된 값.
+ * @param array              $attributes <select> 태그에 사용할 속성들.
  * @param array              $optionAttributes <option> 태그에 붙일 속성.
  *                                             키는 지칭을 옵션 태그의 값. 값은 재차 배열로 키는 속성, 값은 속성의 값.
- * @param array|string|false $headingOption    $options 로 지정된 옵션보다 더 먼저 삽입되는 선택 불가능한 옵션을 추가.
+ * @param array|string|false $headingOption $options 로 지정된 옵션보다 더 먼저 삽입되는 선택 불가능한 옵션을 추가.
  *                                             false 이면 사용하지 않는다.
  *                                             array 면 길이 2여야 하고, 인덱스 0은 value 속성, 인덱스 1은 레이블로 사용된다.
  *                                             string 인 경우 바로 레이블로 사용되며 이 때 value 속성으로는 빈 문자열이 사용된다.
  *                                             즉 이런 식으로 출력된다: <option value="" disabled="disabled"
  *                                             autofocus="autofocus">레이블</option>
- * @param bool               $echo             출력 여부를 지정
+ * @param bool               $echo 출력 여부를 지정
  *
  * @return string|null
  *
