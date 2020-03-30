@@ -680,7 +680,11 @@ function filterStringList($array, $token = "\r\n", $trimmer = 'trim', $filter = 
     $array = array_map($trimmer, $array);
 
     if ($filter) {
-        $array = array_filter($array, is_callable($filter) ? $filter : null);
+        if (is_callable($filter)) {
+            $array = array_filter($array, $filter);
+        } else {
+            $array = array_filter($array);
+        }
     }
 
     if (false !== $unique) {
