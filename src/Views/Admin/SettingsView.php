@@ -211,7 +211,7 @@ abstract class SettingsView extends BaseView implements SettingsViewInterface
             /** @var FieldWidgetInterface|null $fieldWidget */
             $fieldWidget = $args['_fieldWidget'] ?? null;
             $title       = $fieldWidget ? $fieldWidget->getTitle() : '';
-            $labelFor    = $fieldWidget->getLabelFor();
+            $labelFor    = $fieldWidget ? $fieldWidget->getLabelFor() : '';
 
             if ($labelFor) {
                 $args['label_for'] = $labelFor;
