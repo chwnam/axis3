@@ -60,6 +60,11 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
         return $this->args['group'];
     }
 
+    public function isHidden()
+    {
+        return $this->args['hidden'];
+    }
+
     public function retrieve($context = null)
     {
         $value = null;
@@ -281,6 +286,12 @@ class OptionFieldModel extends BaseFieldModel implements OptionFieldModelInterfa
                  */
                 'afterUpdate'          => null,
                 'afterUpdatePriority'  => null,
+
+                /**
+                 * bool: true 의 경우 겉으로 드러나지 않는 필드임을 말한다. 기본은 false.
+                 *       일부 옵션은 내부적으로만 존재하며 UI를 가지지 않을 수 있다. 이런 필드는 hidden = true 를 준다.
+                 */
+                'hidden'               => false,
             ]
         );
     }

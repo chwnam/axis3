@@ -35,6 +35,8 @@ abstract class SettingsModel extends OptionFieldHolderModel implements SettingsM
                 add_filter("pre_update_option_{$optionField->getKey()}", [$this, 'preUpdateContextualOption'], 1, 3);
             }
         }
+
+        add_filter('whitelist_options', [$this, 'callbackFilterWhitelistOptions'], 20);
     }
 
     public function activationSetup()
@@ -125,12 +127,59 @@ abstract class SettingsModel extends OptionFieldHolderModel implements SettingsM
         return $oldValue;
     }
 
+    /**
+     * 히든 필드에 대해 whitelist_options 목록에서 제거한다.
+     * 단, 히든 필드의 옵션 그룹이 해당 모델과 같지 않으면 동작하지 않는다.
+     *
+     * 히든 필드는 겉으로 나오지 않고 프로그램 내부적으로만 처리되도록 약속된 필드이다.
+     * Settings API 에 의해 옵션이 등록되면 옵션 폼 제출에 의한 업데이트 동작시 등록된 옵션에 대해 일괄적인
+     * update_option() 호출이 일어난다. 폼에 전달되든 전달되지 않든 말이다.
+     *
+     * 그런데 히든 필드는 UI를 따로 만들지 않았기 때문에 값이 제대로 업데이트 될 리 없다.
+     * 값도 엉뚱하게 변경되고, 원치 않은 notice 메시지도 마주하게 될 것이다.
+     *
+     * 그렇다고 옵션을 등록하지 않으면? 값 등록시 sanitize_callback 콜백을 지정하고, axis3는 이것을 중요하게 생각한다.
+     * 즉 프로그래밍 상에서 옵션 업데이트시 제대로 sanitize_callback 이 일어나지 않아 그것도 부작용이 된다.
+     *
+     * 그래서 일괄 register_option() 함수를 통해 적용하되, 옵션 업데이트가 일어나기 전에만
+     * whitelist options 에서 제거한다. 이렇게 하면 일괄적인 업데이트시 값의 오염을 막는다.
+     *
+     * @param array $whitelistOptions
+     *
+     * @return array
+     *
+     * @see /wp-admin/options.php
+     * @see wp-admin/includes/admin-filters.php
+     * @see option_update_filter()
+     */
+    public function callbackFilterWhitelistOptions($whitelistOptions)
+    {
+        if (isset($whitelistOptions[static::getOptionGroup()])) {
+            $cleared = false;
+            foreach ($this->getAllOptionFields() as $field) {
+                /** @var OptionFieldModelInterface $field */
+                if ($field->isHidden()) {
+                    $pos = array_search($field->getKey(), $whitelistOptions[static::getOptionGroup()]);
+                    if (false !== $pos) {
+                        unset($whitelistOptions[static::getOptionGroup()][$pos]);
+                        $cleared = true;
+                    }
+                }
+            }
+            if ($cleared) {
+                $whitelistOptions[static::getOptionGroup()] = array_values($whitelistOptions[static::getOptionGroup()]);
+            }
+        }
+
+        return $whitelistOptions;
+    }
+
     protected function getOptionFieldArgs(callable $args)
     {
         $argument = parent::getOptionFieldArgs($args);
 
         if (empty($argument['group'])) {
-            $argument['group'] = $this->getOptionGroup();
+            $argument['group'] = static::getOptionGroup();
         }
 
         return $argument;

@@ -73,4 +73,12 @@ interface OptionFieldModelInterface extends FieldModelInterface
      * @see    get_registered_settings()
      */
     public function registerOptionField();
+
+    /**
+     * 이 필드가 숨겨진 필드인지를 나타냄. 숨겨진 필드는 UI 인터페이스를 가지지 않으며,
+     * 저장시 whitelist option 에서 제거된다.
+     *
+     * @return bool
+     */
+    public function isHidden();
 }
