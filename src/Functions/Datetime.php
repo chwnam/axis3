@@ -201,3 +201,19 @@ function createFromFormat(string $format, string $input, DateTimeZone $timezone)
 
     return DateTime::createFromFormat($format, $input, $timezone);
 }
+
+
+function createFromImmutable(DateTimeImmutable $input): DateTime
+{
+    if (version_compare(phpversion(), '7.3.0', '>=')) {
+        return DateTime::createFromImmutable($input);
+    } else {
+        try {
+            $date = new DateTime(null, $input->getTimezone());
+            $date->setTimestamp($input->getTimestamp());
+        } catch (Exception $e) {
+        }
+        /** @noinspection PhpUndefinedVariableInspection */
+        return $date;
+    }
+}
