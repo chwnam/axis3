@@ -17,7 +17,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-define('AXIS3_VERSION', ' 0.1.10');
+define('AXIS3_VERSION', '0.1.10');
 define('AXIS3_MAIN', __FILE__);
 
 if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {
