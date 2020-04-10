@@ -29,4 +29,3 @@ if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {
 }
 
 add_action( 'admin_enqueue_scripts', 'Shoplic\Axis3\Functions\adminEnqueueScripts' );
-
