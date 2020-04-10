@@ -432,6 +432,16 @@ function strSplit($text, $split_length = 1)
 }
 
 
+function uniOrd($input, $encode = 'UTF-8')
+{
+    $charUCS4 = mb_convert_encoding($input, 'UCS-4BE', $encode);
+    $byte1    = ord(substr($charUCS4, 0, 1));
+    $byte2    = ord(substr($charUCS4, 1, 1));
+    $byte3    = ord(substr($charUCS4, 2, 1));
+    $byte4    = ord(substr($charUCS4, 3, 1));
+    return ($byte1 << 32) + ($byte2 << 16) + ($byte3 << 8) + $byte4;
+}
+
 /**
  * 한글 자소 분리를 한다.
  *
@@ -526,7 +536,7 @@ function decomposeHangul(string $input)
     ];
 
     foreach (strSplit($input) as $chr) {
-        $code = mb_ord($chr, 'UTF-8');
+        $code = uniOrd($chr);
         if (44032 <= $code && $code <= 55203) {
             $t        = $code - 44032;
             $hi       = (int)($t / 588);
@@ -581,7 +591,7 @@ function josa(string $input, string $a, string $b): string
         if (3 === count($s[0])) {
             if (!$s[0][1] && !$s[0][2]) {
                 // 단모음 단자음.
-                $code = mb_ord($last, 'UTF-8');
+                $code = uniOrd($last, 'UTF-8');
                 if (12593 <= $code && $code <= 12622) {
                     // 단모음
                     $output = $input . $b;
