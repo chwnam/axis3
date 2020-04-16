@@ -54,7 +54,9 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
         }
 
         // keyPostfix 처리
-        $this->args['keyPostfix'] = array_filter(array_map('sanitize_key', (array)$this->args['keyPostfix']));
+        if (true !== $this->args['keyPostfix']) {
+            $this->args['keyPostfix'] = array_filter(array_map('sanitize_key', (array)$this->args['keyPostfix']));
+        }
 
         if ($fieldModel->getValueType() instanceof ValueObjectType) {
             if (!isset($this->args['getterMethod'])) {
@@ -204,7 +206,7 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
         $id      = $this->getFieldModel()->getKey();
         $postfix = '';
 
-        if (!empty($this->args['keyPostfix'])) {
+        if (is_array($this->args['keyPostfix']) && !empty($this->args['keyPostfix'])) {
             $postfix = '-' . implode('-', $this->args['keyPostfix']);
         };
 
@@ -216,7 +218,9 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
         $name    = $this->getFieldModel()->getKey();
         $postfix = '';
 
-        if (!empty($this->args['keyPostfix'])) {
+        if (true === $this->args['keyPostfix']) {
+            $postfix = '[]';
+        } elseif (is_array($this->args['keyPostfix']) && !empty($this->args['keyPostfix'])) {
             $postfix = '[' . implode('][', $this->args['keyPostfix']) . ']';
         }
 
@@ -256,7 +260,7 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
             if ($this->args['getterMethod']) {
                 $value = $value->{$this->args['getterMethod']}();
             }
-        } elseif (is_array($value) && $this->args['keyPostfix']) {
+        } elseif (is_array($value) && is_array($this->args['keyPostfix'])) {
             $postfix  = array_reverse($this->args['keyPostfix']);
             $innerVal = $value;
             while ($postfix) {
@@ -463,9 +467,10 @@ abstract class BaseFieldWidget extends BaseView implements FieldWidgetInterface
             //       폼 필드의 행을 출력 보다는 단일 위젯을 별개로 출력해야 할 때 유용하다.
             'echo'             => true,
 
-            // null|string|array: name, id 속성의 접미어를 더한다.
-            //                    폼 제출시 전달하는 변수를 배열 형태로, 배열의 키를 명시적으로 지정할 수 있다.
-            //                    다중 배열로 지정하려면 array 를 이용한다.
+            // string|array|true|null: name, id 속성의 접미어를 더한다.
+            //                         폼 제출시 전달하는 변수를 배열 형태로, 배열의 키를 명시적으로 지정할 수 있다.
+            //                         다중 배열로 지정하려면 array 를 이용한다.
+            //                         true 로 전달하면 이름없는 브라캣이 될 수 있다.
             'keyPostfix'       => null,
 
             // string: 값 타입이 valueObject 인 경우 사용할 수 있다. 메소드 이름으로부터 값을 구해 온다.
