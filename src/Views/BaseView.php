@@ -150,11 +150,11 @@ class BaseView extends AxisObject implements ViewInterface
 
     public function getAssetUrl(string $assetType, string $relPath, bool $internal = false): string
     {
-        $key = "{$assetType}-{$relPath}";
+        $cacheKey = "{$assetType}-{$relPath}";
         $url = false;
 
-        if (isset(static::$assets[$key])) {
-            $url = static::$assets[$key];
+        if (isset(static::$assets[$cacheKey])) {
+            $url = static::$assets[$cacheKey];
         } else {
             $assetType = trim($assetType, '/\\');
             $relPath   = trim($relPath, '/\\');
@@ -192,7 +192,7 @@ class BaseView extends AxisObject implements ViewInterface
             }
 
             if ($url) {
-                static::$assets[$key] = $url;
+                static::$assets[$cacheKey] = $url;
             }
         }
 
