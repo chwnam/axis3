@@ -1,4 +1,12 @@
 # CHANGELOG
+## 0.1.11
+2020년 04월 16일
+- keyPostfix 지원 확대 (1a0103ba)
+- select 태그 출력이 multiple 속성을 지원하도록 수정 (c13670ad)
+- BaseView::getAssetUrl() 메소드 버그 수정 (0cb85d3e)
+- listTag() 함수 추가. (089866df)
+
+
 ## 0.1.10
 2020년 04월 07일
 - mb_ord() 대신 uniOrd() 호환 함수 제작 (847bf027)
