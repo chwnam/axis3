@@ -156,8 +156,8 @@ function formatAttr(array $attributes): string
 function openTag(string $tag, array $attributes = [], bool $echo = true)
 {
     $output = '';
-    $tag = sanitize_key($tag);
-    $attrs = formatAttr($attributes);
+    $tag    = sanitize_key($tag);
+    $attrs  = formatAttr($attributes);
 
     if ($tag && $attrs) {
         $output = '<' . $tag . $attrs . '>';
@@ -183,7 +183,7 @@ function openTag(string $tag, array $attributes = [], bool $echo = true)
 function closeTag(string $tag, bool $echo = true)
 {
     $output = '';
-    $tag = sanitize_key($tag);
+    $tag    = sanitize_key($tag);
 
     if ($tag) {
         $output = '</' . $tag . '>';
@@ -215,21 +215,18 @@ function inputTag(array $attributes = [], bool $echo = true)
 /**
  * <option> 태그를 생성.
  *
- * @param string $value      값 속성.
- * @param string $label      레이블.
- * @param string $selected   선택된 값. 이 값과 $value 가 동일하면 'selected' 속성이 추가.
- * @param array  $attributes 태그의 기타 속성.
- * @param bool   $echo       출력 여부.
+ * @param string      $value      값 속성.
+ * @param string      $label      레이블.
+ * @param string|bool $selected   선택된 값. 이 값과 $value 가 동일하면 'selected' 속성이 추가. 불리언으로도 가능.
+ * @param array       $attributes 태그의 기타 속성.
+ * @param bool        $echo       출력 여부.
  *
  * @return string|null
  */
-function optionTag(string $value, string $label, string $selected, array $attributes = [], bool $echo = true)
+function optionTag(string $value, string $label, $selected, array $attributes = [], bool $echo = true)
 {
-    $attributes['value'] = $value;
-
-    if ($value == $selected) {
-        $attributes['selected'] = 'selected';
-    }
+    $attributes['value']    = $value;
+    $attributes['selected'] = is_bool($selected) ? $selected : $value == $selected;
 
     $output = openTag('option', $attributes, false) . esc_html($label) . closeTag('option', false);
 
@@ -247,7 +244,7 @@ function optionTag(string $value, string $label, string $selected, array $attrib
  *
  * @param array              $options          키 - 값 배열을 이용해 옵션 목록을 제공할 수 있다.
  *                                             한편 값이 재차 배열인 경우는 이 키는 옵션 그룹의 레이블로, 값은 옵션 그룹의 옵션으로 쓰인다.
- * @param string             $selected         선택된 값.
+ * @param string|array       $selected         선택된 값.
  * @param array              $attributes       <select> 태그에 사용할 속성들.
  * @param array              $optionAttributes <option> 태그에 붙일 속성.
  *                                             키는 지칭을 옵션 태그의 값. 값은 재차 배열로 키는 속성, 값은 속성의 값.
@@ -255,8 +252,8 @@ function optionTag(string $value, string $label, string $selected, array $attrib
  *                                             false 이면 사용하지 않는다.
  *                                             array 면 길이 2여야 하고, 인덱스 0은 value 속성, 인덱스 1은 레이블로 사용된다.
  *                                             string 인 경우 바로 레이블로 사용되며 이 때 value 속성으로는 빈 문자열이 사용된다.
- *                                             즉 이런 식으로 출력된다: <option value="" disabled="disabled"
- *                                             autofocus="autofocus">레이블</option>
+ *                                             즉 이런 식으로 출력된다:
+ *                                             <option value="" disabled="disabled">레이블</option>
  * @param bool               $echo             출력 여부를 지정
  *
  * @return string|null
@@ -292,13 +289,17 @@ function optionTag(string $value, string $label, string $selected, array $attrib
  */
 function selectTag(
     array $options = [],
-    string $selected = '',
+    $selected = '',
     array $attributes = [],
     array $optionAttributes = [],
     $headingOption = false,
     bool $echo = true
 ) {
     $buffer = [openTag('select', $attributes, false)];
+
+    if (is_array($selected)) {
+        $selected = array_combine(array_values($selected), array_pad([], count($selected), true));
+    }
 
     if (is_array($headingOption) && sizeof($headingOption) >= 2) {
         $buffer[] = optionTag(
@@ -307,7 +308,7 @@ function selectTag(
             $selected,
             [
                 'disabled' => true,
-                'selected' => $selected == $headingOption[0],
+                'selected' => isset($selected[$headingOption[0]]),
             ],
             false
         );
@@ -328,11 +329,23 @@ function selectTag(
         if (is_array($item)) {
             $buffer[] = openTag('optgroup', array_merge(['label' => $value], $optionAttributes[$value] ?? []), false);
             foreach ($item as $val => $label) {
-                $buffer[] = optionTag($val, $label, $selected, $optionAttributes[$val] ?? [], false);
+                $buffer[] = optionTag(
+                    $val,
+                    $label,
+                    is_array($selected) ? isset($selected[$val]) : $selected,
+                    $optionAttributes[$val] ?? [],
+                    false
+                );
             }
             $buffer[] = closeTag('optgroup');
         } else {
-            $buffer[] = optionTag($value, $item, $selected, $optionAttributes[$value] ?? [], false);
+            $buffer[] = optionTag(
+                $value,
+                $item,
+                is_array($selected) ? isset($selected[$value]) : $selected,
+                $optionAttributes[$value] ?? [],
+                false
+            );
         }
     }
 
