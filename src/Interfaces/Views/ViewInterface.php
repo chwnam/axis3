@@ -29,32 +29,32 @@ interface ViewInterface extends AxisObjectInterface
     /**
      * 스크립트를 삽입
      *
-     * @param string $handle
-     * @param string $relPath
-     * @param array  $deps
-     * @param bool   $version
-     * @param bool   $inFooter
-     * @param string $objName
-     * @param array  $l10n
-     * @param string $inline
-     * @param string $inlinePosition
-     * @param bool   $finishEnqueue
-     * @param bool   $internal
+     * @param string       $handle         스크립트 핸들.
+     * @param string       $relPath        상대 경로. plugin_dir_url(MAIN_FILE) . 'src/assets/js' 이후의 경로만 입력합니다.
+     * @param array        $deps           스크립트 의존성 지정.
+     * @param bool         $version        'false'면 워드프레스의 버전을 따르고, 'null'이면 버전을 아예 붙이지 않습니다.
+     * @param bool         $inFooter       푸터에 놓도록 강제합니다.
+     * @param string|false $objName        스크립트에 주어지는 번역 오브젝트 변수 이름. 'false'로 지정할 수 있는데, 이러면 이후 인자는 모두 무시하고 wp_register_script() 만 처리합니다.
+     * @param array        $l10n           json_encode 처리되는 배열.
+     * @param string       $inline         인라인 스크립트.
+     * @param string       $inlinePosition 인라인 스크립트의 위치. before, or after.
+     * @param bool         $finishEnqueue  인큐잉을 마칠지 말지 결정.
+     * @param bool         $internal       axis3 내부 인자의 경우 true.
      *
      * @return self
      */
     public function enqueueScript(
-        string $handle,
-        string $relPath = '',
-        array $deps = [],
+        $handle,
+        $relPath = '',
+        $deps = [],
         $version = false,
-        bool $inFooter = false,
-        string $objName = '',
-        array $l10n = [],
-        string $inline = '',
-        string $inlinePosition = 'after',
-        bool $finishEnqueue = true,
-        bool $internal = false
+        $inFooter = false,
+        $objName = '',
+        $l10n = [],
+        $inline = '',
+        $inlinePosition = 'after',
+        $finishEnqueue = true,
+        $internal = false
     );
 
     public function enqueueStyle(

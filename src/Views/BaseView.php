@@ -151,7 +151,7 @@ class BaseView extends AxisObject implements ViewInterface
     public function getAssetUrl(string $assetType, string $relPath, bool $internal = false): string
     {
         $cacheKey = "{$assetType}-{$relPath}";
-        $url = false;
+        $url      = false;
 
         if (isset(static::$assets[$cacheKey])) {
             $url = static::$assets[$cacheKey];
@@ -272,17 +272,17 @@ class BaseView extends AxisObject implements ViewInterface
     }
 
     public function enqueueScript(
-        string $handle,
-        string $relPath = '',
-        array $deps = [],
+        $handle,
+        $relPath = '',
+        $deps = [],
         $version = false,
-        bool $inFooter = false,
-        string $objName = '',
-        array $l10n = [],
-        string $inline = '',
-        string $inlinePosition = 'after',
-        bool $finishEnqueue = true,
-        bool $internal = false
+        $inFooter = false,
+        $objName = '',
+        $l10n = [],
+        $inline = '',
+        $inlinePosition = 'after',
+        $finishEnqueue = true,
+        $internal = false
     ) {
         if (!wp_script_is($handle, 'registered')) {
             $registeredHere = true;
@@ -295,6 +295,10 @@ class BaseView extends AxisObject implements ViewInterface
             );
         } else {
             $registeredHere = false;
+        }
+
+        if (false === $objName) {
+            return $this;
         }
 
         if (!wp_script_is($handle, 'enqueued')) {
