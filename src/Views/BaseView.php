@@ -70,24 +70,21 @@ class BaseView extends AxisObject implements ViewInterface
      * Embedded JS 템플릿을 삽입한다.
      *
      * render() 메소드와 차이점은, 이것은 여러번 불려도 $tmplId 기준으로 한 번 불린 것은 다시 불리지 않는다는 것이다.
-     * $return = true 라도 마찬가지.
      * 템플릿 안에 script 태그를 넣지 말 것. 이 메소드에서 그 부분을 알아서 처리할 것이다.
      *
      * @param string $template 템플릿의 경로
      * @param string $tmplId   템플릿 ID. 공백이면 템플릿 파일 이름에서 적절히 추출한다.
-     * @param bool   $return   출력을 리턴받으려면 true, 바로 출력하려면 false.
      * @param bool   $internal Axis3 내부의 경로를 참조하는 경우 true.
      *
-     * @return null|string
+     * @return self
      */
     public function enqueueEjs(
         string $template,
         string $tmplId = '',
-        bool $return = false,
         bool $internal = false
     ) {
         if (isset(static::$templates[$template])) {
-            return null;
+            return $this;
         }
 
         $templatePath = false;
@@ -116,36 +113,22 @@ class BaseView extends AxisObject implements ViewInterface
             if (!$tmplId) {
                 $fileName = pathinfo($templatePath, PATHINFO_FILENAME);
                 if (!$fileName) {
-                    return null;
+                    return $this;
                 }
-                $tmplId = 'tmpl-' . $fileName;
+                $tmplId = $fileName;
             }
             if (!strStartsWith($tmplId, 'tmpl-')) {
                 $tmplId = 'tmpl-' . $tmplId;
             }
-            static::$templates[$template] = $templatePath;
+            static::$templates[$template] = [$tmplId, $templatePath];
 
-            if ($return) {
-                ob_start();
-            }
-
-            echo "\n";
-            openTag('script', ['id' => $tmplId, 'type' => 'text/template']);
-            echo "\n";
-
-            /** @noinspection PhpIncludeInspection */
-            include $templatePath;
-
-            echo "\n";
-            closeTag('script');
-            echo "\n";
-
-            if ($return) {
-                return ob_get_clean();
+            $tag = is_admin() ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
+            if (!has_action($tag, [__CLASS__, 'printEjsTemplates'])) {
+                add_action($tag, [__CLASS__, 'printEjsTemplates'], 100000000);
             }
         }
 
-        return null;
+        return $this;
     }
 
     public function getAssetUrl(string $assetType, string $relPath, bool $internal = false): string
@@ -437,6 +420,35 @@ class BaseView extends AxisObject implements ViewInterface
 
         if (is_admin() && !wp_style_is('axis3-admin-github-markdown')) {
             wp_enqueue_style('axis3-admin-github-markdown');
+        }
+    }
+
+    /**
+     * @callback
+     * @action      wp_print_footer_scripts
+     * @action      admin_print_footer_scripts
+     *
+     * @used-by     BaseView::enqueueEjs()
+     */
+    public static function printEjsTemplates()
+    {
+        $tag = is_admin() ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
+
+        if (!doing_action($tag)) {
+            return;
+        }
+
+        foreach (static::$templates as list($tmplId, $templatePath)) {
+            echo "\n";
+            openTag('script', ['id' => $tmplId, 'type' => 'text/template']);
+            echo "\n";
+
+            /** @noinspection PhpIncludeInspection */
+            include $templatePath;
+
+            echo "\n";
+            closeTag('script');
+            echo "\n";
         }
     }
 }
