@@ -1,4 +1,9 @@
 # CHANGELOG
+## 0.1.12
+2020년 04월 24일
+- BaseView::enqueueEjs() 의 메소드 체인 구현 (bde09013)
+
+
 ## 0.1.11
 2020년 04월 16일
 - keyPostfix 지원 확대 (1a0103ba)

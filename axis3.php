@@ -6,8 +6,8 @@
  *
  * @wordpress-plugin
  * Plugin Name: Axis 3 Framework
- * Description: A WordPress must-use (MU) plugin for developing highly customized, modern PHP based websites
- * Version:     0.1.11
+ * Description: A WordPress must-use (MU) plugin for developing highly customized, modern PHP based websites.
+ * Version:     0.1.12
  * Author:      Changwoo Nam
  * Author URI:  mailto://changwoo@shoplic.kr
  * Plugin URI:  https://github.com/chwnam/axis3/
@@ -17,7 +17,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-define('AXIS3_VERSION', '0.1.11');
+define('AXIS3_VERSION', '0.1.12');
 define('AXIS3_MAIN', __FILE__);
 
 if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {
