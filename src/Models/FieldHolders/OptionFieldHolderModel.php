@@ -34,7 +34,7 @@ abstract class OptionFieldHolderModel extends BaseModel implements OptionFieldHo
         string $key,
         $argCallback = null,
         $optionFieldClassName = null
-    ): OptionFieldModelInterface {
+    ) {
         if (isset($this->optionFields[$key])) {
             return $this->optionFields[$key];
         } else {
