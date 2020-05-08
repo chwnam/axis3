@@ -1,4 +1,11 @@
 # CHANGELOG
+
+## 0.1.13
+2020년 05월 8일
+- ScriptPropFilter 관련 인터페이스 수정 및 사용 편의성 확대. (3c0610ef, 766f707b, 2a26a1d7, b76e725f)
+- 자잘한 수정. (a4a014d7, 0658d5cb)
+
+
 ## 0.1.12
 2020년 04월 24일
 - BaseView::enqueueEjs() 의 메소드 체인 구현 (bde09013)
