@@ -119,18 +119,24 @@ function formatAttr(array $attributes): string
                  *   $attrs['required'] = 'required';
                  * }
                  */
-                $func = function ($key, $value) {
-                    if ((is_bool($value) && $value) || $key === $value) {
-                        return $key . '=' . $key;
-                    } else {
-                        return '';
+                $func = function ($key, $val) {
+                    if ($key) {
+                        if (is_bool($val)) {
+                            return $val ? $key . '=' . encloseString($key) : '';
+                        } else {
+                            return $val ? $key . '=' . encloseString(esc_attr($val)) : $key;
+                        }
                     }
+                    return '';
                 };
                 break;
 
             default:
                 $func = function ($key, $val) {
-                    return $key . '=' . encloseString(esc_attr($val));
+                    if ($key) {
+                        return $val ? $key . '=' . encloseString(esc_attr($val)) : $key;
+                    }
+                    return '';
                 };
                 break;
         }
