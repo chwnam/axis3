@@ -303,9 +303,9 @@ class BaseView extends AxisObject implements ViewInterface
         return $this;
     }
 
-    public function enableScriptPropFilter($handle, $type = ScriptPropFilterAspect::TYPE_DEFER)
+    public function addScriptProps($handle, $props)
     {
-        $this->claimAspect(ScriptPropFilterAspect::class)->enableScriptProp($handle, $type);
+        $this->claimAspect(ScriptPropFilterAspect::class)->enableScriptProp($handle, $props);
 
         return $this;
     }
