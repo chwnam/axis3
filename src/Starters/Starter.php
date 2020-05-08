@@ -3,7 +3,6 @@
 namespace Shoplic\Axis3\Starters;
 
 use Exception;
-use Shoplic\Axis3\Aspects\ScriptPropFilterAspect;
 use Shoplic\Axis3\Initiators\ModelRegistrationInitiator;
 use Shoplic\Axis3\Interfaces\Initiators\InitiatorInterface;
 use Shoplic\Axis3\Interfaces\Objects\AxisObjectInterface;
@@ -43,9 +42,6 @@ class Starter implements StarterInterface
 
     /** @var bool 모델 자동 등록을 시도합니다. */
     private $modelRegistrationEnabled = true;
-
-    /** @var bool 스크립트 속성 필터를 씁니다. */
-    private $scriptPropFilter = true;
 
     /** @var array key: fqcn, value: mixed */
     private $objectSetupArgs = [];
@@ -93,10 +89,6 @@ class Starter implements StarterInterface
 
         if (empty($this->getPrefix())) {
             $this->setPrefix($this->getSlug());
-        }
-
-        if ($this->isScriptPropFilterEnabled()) {
-            $this->claimObject('aspect', ScriptPropFilterAspect::class);
         }
 
         if ($this->isModelRegistrationEnabled()) {
@@ -283,26 +275,6 @@ class Starter implements StarterInterface
         $this->modelRegistrationEnabled = $enabled;
 
         return $this;
-    }
-
-    public function isScriptPropFilterEnabled(): bool
-    {
-        return $this->scriptPropFilter;
-    }
-
-    public function setScriptPropFilterEnabled(bool $enabled)
-    {
-        $this->scriptPropFilter = $enabled;
-
-        return $this;
-    }
-
-    public function getScriptPropFilter()
-    {
-        if ($this->isScriptPropFilterEnabled()) {
-            return $this->claimObject('aspect', ScriptPropFilterAspect::class);
-        }
-        return null;
     }
 
     public function getBlogId()

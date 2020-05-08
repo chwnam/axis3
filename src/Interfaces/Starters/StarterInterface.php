@@ -3,7 +3,6 @@
 namespace Shoplic\Axis3\Interfaces\Starters;
 
 use Exception;
-use Shoplic\Axis3\Aspects\ScriptPropFilterAspect;
 use Shoplic\Axis3\Interfaces\Initiators\InitiatorInterface;
 use Shoplic\Axis3\Interfaces\Objects\AxisObjectInterface;
 use Shoplic\Axis3\Interfaces\Starters\ClassFinders\ClassFinderInterface;
@@ -193,30 +192,6 @@ interface StarterInterface
      * @return self
      */
     public function setModelRegistrationEnabled(bool $enabled);
-
-
-    /**
-     * 스크립트 속성 필터를 쓸지 결정. 기본은 TRUE.
-     *
-     * @return bool
-     */
-    public function isScriptPropFilterEnabled(): bool;
-
-    /**
-     * 스크립트 속성 필터 사용 여부를 결정
-     *
-     * @param bool $enabled
-     *
-     * @return self
-     */
-    public function setScriptPropFilterEnabled(bool $enabled);
-
-    /**
-     * 속성 필터 객체 리턴. 사용하지 않는다면, NULL 리턴.
-     *
-     * @return ScriptPropFilterAspect|NULL
-     */
-    public function getScriptPropFilter();
 
     /**
      * 블로그 ID 반환
