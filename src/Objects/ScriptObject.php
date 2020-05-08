@@ -56,12 +56,20 @@ class ScriptObject
      */
     public $inFooter = false;
 
-    public function __construct($handle, $src, $deps = [], $ver = false, $inFooter = false)
+    /**
+     * 기타 속성. 키=값 형태로 script 태그 속성에 반영된다.
+     *
+     * @var array
+     */
+    public $props = [];
+
+    public function __construct($handle, $src, $deps = [], $ver = false, $inFooter = false, $extraProps = [])
     {
         $this->handle   = $handle;
         $this->src      = $src;
         $this->deps     = $deps;
         $this->ver      = $ver;
         $this->inFooter = $inFooter;
+        $this->props    = $extraProps;
     }
 }

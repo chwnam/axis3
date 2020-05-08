@@ -2,6 +2,7 @@
 
 namespace Shoplic\Axis3\Initiators;
 
+use Shoplic\Axis3\Aspects\ScriptPropFilterAspect;
 use Shoplic\Axis3\Objects\ScriptObject;
 use Shoplic\Axis3\Objects\StyleObject;
 
@@ -195,9 +196,20 @@ class ScriptRegistrationInitiator extends BaseInitiator
      */
     protected function registerScripts($scripts)
     {
+        $aspect = $this->claimAspect(ScriptPropFilterAspect::class);
+
         foreach ($scripts as $script) {
             if ($script instanceof ScriptObject && $script->handle && $script->src) {
-                wp_register_script($script->handle, $script->src, $script->deps, $script->ver, $script->inFooter);
+                $result = wp_register_script(
+                    $script->handle,
+                    $script->src,
+                    $script->deps,
+                    $script->ver,
+                    $script->inFooter
+                );
+                if ($aspect && $script->props && $result) {
+                    $aspect->addScriptProps($script->handle, $script->props);
+                }
             }
         }
     }
