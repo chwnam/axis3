@@ -124,7 +124,7 @@ class BaseView extends AxisObject implements ViewInterface
 
             $tag = is_admin() ? 'admin_print_footer_scripts' : 'wp_print_footer_scripts';
             if (!has_action($tag, [__CLASS__, 'printEjsTemplates'])) {
-                add_action($tag, [__CLASS__, 'printEjsTemplates'], 100000000);
+                add_action($tag, [__CLASS__, 'printEjsTemplates'], 5);
             }
         }
 
@@ -438,17 +438,30 @@ class BaseView extends AxisObject implements ViewInterface
             return;
         }
 
-        foreach (static::$templates as list($tmplId, $templatePath)) {
-            echo "\n";
-            openTag('script', ['id' => $tmplId, 'type' => 'text/template']);
-            echo "\n";
+        foreach (static::$templates as $item) {
+            if (!is_array($item) || 2 != count($item)) {
+                continue;
+            }
 
-            /** @noinspection PhpIncludeInspection */
-            include $templatePath;
+            /**
+             * @var array $item 길이 2인 배열로 입력됨.
+             * @see BaseView::enqueueEjs()
+             */
+            $tmplId       = $item[0];
+            $templatePath = $item[1];
 
-            echo "\n";
-            closeTag('script');
-            echo "\n";
+            if ($tmplId && $templatePath) {
+                echo "\n";
+                openTag('script', ['id' => $tmplId, 'type' => 'text/template']);
+                echo "\n";
+
+                /** @noinspection PhpIncludeInspection */
+                include $templatePath;
+
+                echo "\n";
+                closeTag('script');
+                echo "\n";
+            }
         }
     }
 }
