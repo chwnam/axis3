@@ -1,4 +1,10 @@
 # CHANGELOG
+## 0.1.15
+2020년 05월 26일
+- 포스트 캐시 삭제된 다음의 대응 추가. (a9e23229) 
+- MetaFieldHolderModel::claimMetaFieldModel() 인터페이스의 리턴 타입 삭제 (8c447149)
+
+
 ## 0.1.14
 2020년 05월 15일
 - BaseView::enqueueEjs() 메소드에서 EJS 파일이 출력되는 시점 조정 (b1147882)
