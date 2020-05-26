@@ -32,7 +32,7 @@ interface MetaFieldHolderInterface
         string $key,
         $argCallback = null,
         $metaFieldClassName = null
-    ): MetaFieldModelInterface;
+    );
 
     /**
      * 클래스 내부에 구현된 모든 메타 필드를 리턴합니다.

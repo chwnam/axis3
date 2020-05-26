@@ -33,7 +33,7 @@ abstract class MetaFieldHolderModel extends BaseModel implements MetaFieldHolder
         string $key,
         $argCallback = null,
         $metaFieldClassName = null
-    ): MetaFieldModelInterface {
+    ) {
         if (empty($key)) {
             return null;
         } elseif (isset($this->metaFields[$key])) {
@@ -46,7 +46,7 @@ abstract class MetaFieldHolderModel extends BaseModel implements MetaFieldHolder
 
                 /** @var MetaFieldModelInterface $instance */
                 $instance = new $metaFieldClassName($key, $this->getMetaFieldArgs($argCallback));
-                $instance->setStarter($this->getStarter());
+                $instance->setStarter($this->getStarter())->setup();
                 $instance->registerMetaField();
 
                 $this->metaFields[$key] = $instance;
