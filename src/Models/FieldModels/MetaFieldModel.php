@@ -34,7 +34,7 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
      * @param       $key
      * @param array $args
      *
-     * @see BaseFieldModel::getDefaultArgs()        기본 인자의 목록을 여기서 참고하세요.
+     * @see BaseFieldModel::getDefaultArgs()    기본 인자의 목록을 여기서 참고하세요.
      * @see MetaFieldModel::getDefaultArgs()    기본 인자의 목록을 여기서 참고하세요.
      */
     public function __construct($key, $args = [])
@@ -52,6 +52,28 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
 
         if (is_null($this->args['updateCache'])) {
             $this->args['updateCache'] = $this->getValueType() instanceof ValueObjectType;
+        }
+    }
+
+    public function setup($args = [])
+    {
+        if (!has_action('clean_post_cache', [static::class, 'cleanPostCache'])) {
+            add_action('clean_post_cache', [static::class, 'cleanPostCache']);
+        }
+    }
+
+    /**
+     * 특정 포스트 캐시 삭제시 플래그도 초기화.
+     *
+     * @callback
+     * @action      clean_post_cache
+     *
+     * @param int $postId
+     */
+    public static function cleanPostCache($postId)
+    {
+        if (isset(static::$cacheUpdated[$postId])) {
+            unset(static::$cacheUpdated[$postId]);
         }
     }
 
@@ -109,8 +131,8 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
         }
 
         if ($this->args['updateCache']) {
-            if (!isset(static::$cacheUpdated[$key . '-' . $objectId])) {
-                static::$cacheUpdated[$key . '-' . $objectId] = true;
+            if (!isset(static::$cacheUpdated[$objectId][$key])) {
+                static::$cacheUpdated[$objectId][$key] = true;
 
                 $cache = wp_cache_get($objectId, $this->getObjectType() . '_meta');
                 if (false === $cache) {
@@ -159,7 +181,7 @@ class MetaFieldModel extends BaseFieldModel implements MetaFieldModelInterface
             );
         }
 
-        unset(static::$cacheUpdated[$this->getKey() . '-' . $objectId]);
+        unset(static::$cacheUpdated[$objectId][$this->getKey()]);
 
         $objectType = $this->getObjectType();
         $objectId   = $this->checkObjectId($objectId);
