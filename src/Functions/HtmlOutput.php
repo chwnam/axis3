@@ -131,6 +131,13 @@ function formatAttr(array $attributes): string
                 };
                 break;
 
+            case 'value':
+                $func = function ($key, $val) {
+                    // NOTE: 문자열 '0'도 출력되게 한다.
+                    return $key . '=' . encloseString(esc_attr($val));
+                };
+                break;
+
             default:
                 $func = function ($key, $val) {
                     if ($key) {
