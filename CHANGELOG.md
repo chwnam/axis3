@@ -1,4 +1,9 @@
 # CHANGELOG
+## 0.1.17
+2020년 06월 18일
+-  CheckboxWidget 'extraDesc' 속성 추가 (26ad1f1e)
+
+
 ## 0.1.16
 2020년 06월 05일 
 - formatAttr() 함수 중 'value' 속성 수정 (f79b4947)
