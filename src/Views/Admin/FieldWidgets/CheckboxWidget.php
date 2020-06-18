@@ -40,6 +40,12 @@ class CheckboxWidget extends BaseFieldWidget
         openTag('label', $labelAttrs);
         echo wp_kses_post($this->getDescription());
         closeTag('label');
+
+        if ($this->args['extraDesc']) {
+            openTag('p', ['class' => 'description']);
+            echo wp_kses_post($this->args['extraDesc']);
+            closeTag('p');
+        }
     }
 
     public static function getDefaultArgs(): array
@@ -51,6 +57,8 @@ class CheckboxWidget extends BaseFieldWidget
                 'tooltip'    => false,
                 'inputAttrs' => [],
                 'labelAttrs' => [],
+                // string: p.description 으로 출력하고 싶은 내용을 덧붙일 수 있습니다.
+                'extraDesc'  => '',
             ]
         );
     }
